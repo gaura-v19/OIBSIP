@@ -15,7 +15,7 @@ A responsive landing page built with HTML and CSS.
 - CSS3
 
 ## Live Demo
-[]
+[https://gaurav-o.github.io/OIBSIP/Level1_Task1_LandingPage/]
 
 ## Author
 Gaurav Tripathi
