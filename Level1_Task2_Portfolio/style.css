@@ -693,12 +693,7 @@ footer p{color:var(--muted);font-size:15px;}
 .copy{font-size:12px;opacity:.45;margin-top:5px;}
 
 /* ─── REVEAL ANIMATION ─────────────────────────── */
-.reveal {
-  opacity:0;
-  transform:translateY(32px);
-  transition:opacity .6s ease, transform .6s ease;
-}
-.reveal.visible{opacity:1;transform:translateY(0);}
+
 
 @keyframes fadeUp{
   from{opacity:0;transform:translateY(28px);}
