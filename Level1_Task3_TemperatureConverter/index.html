@@ -1,699 +1,593 @@
-### `index.html`
-
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Temperature Converter</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  <title>Space Thermometer</title>
+  :root {
+    --accent: #0ea5e9;
+    --bg: #080810;
+    --card-bg: #0d0d1a;
+    --border: rgba(255,255,255,0.06);
+    --text: #ffffff;
+    --text-muted: rgba(255,255,255,0.45);
+  }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1.5rem;
+  }
 
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  .container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    width: 100%;
+    max-width: 960px;
+    align-items: start;
+  }
 
-  <style>
+  /* ── LEFT HALF ── */
+  .left { display: flex; flex-direction: column; gap: 1.6rem; }
 
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
+  h1 {
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #fff;
+  }
+  h1 span { color: var(--accent); transition: color 0.5s; }
+
+  .input-wrap { position: relative; }
+  .input-wrap input {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 0.9rem 1.1rem;
+    color: #fff;
+    font-family: inherit;
+    font-size: 1.3rem;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
+  .input-wrap input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  .input-wrap input.error { border-color: #ef4444; }
+  .error-msg {
+    position: absolute;
+    bottom: -1.35rem;
+    left: 4px;
+    font-size: 0.72rem;
+    color: #ef4444;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .error-msg.show { opacity: 1; }
+
+  /* unit toggles */
+  .unit-toggles {
+    display: flex;
+    gap: 0.6rem;
+    margin-top: 0.4rem;
+  }
+  .unit-btn {
+    flex: 1;
+    padding: 0.55rem 0;
+    border-radius: 9px;
+    border: 1px solid var(--border);
+    background: var(--card-bg);
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .unit-btn:hover { color: #fff; border-color: rgba(255,255,255,0.15); }
+  .unit-btn.active {
+    color: #fff;
+    border-color: var(--accent);
+    background: color-mix(in srgb, var(--accent) 14%, #0d0d1a);
+    box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 35%, transparent);
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+  @keyframes glowPulse {
+    0%,100% { box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 30%, transparent); }
+    50%      { box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 60%, transparent); }
+  }
+
+  /* result cards */
+  .cards { display: flex; flex-direction: column; gap: 0.75rem; }
+  .card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: opacity 0.3s, transform 0.3s, border-color 0.5s, box-shadow 0.5s;
+    animation: slideIn 0.35s ease both;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .card.dimmed {
+    opacity: 0.28;
+    pointer-events: none;
+  }
+  .card-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .card-value {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+    transition: all 0.3s;
+  }
+  .card.active-card {
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+  .card-unit {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-left: 4px;
+    font-weight: 500;
+  }
+
+  /* ── RIGHT HALF ── */
+  .right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.4rem;
+    padding-top: 0.5rem;
+  }
+
+  .beaker-wrap {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* pure CSS beaker */
+  .beaker {
+    position: relative;
+    width: 110px;
+    height: 320px;
+  }
+
+  /* The glass tube body */
+  .beaker-body {
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 290px;
+    border: 2px solid rgba(255,255,255,0.18);
+    border-top: none;
+    border-radius: 0 0 22px 22px;
+    background: rgba(255,255,255,0.03);
+    overflow: hidden;
+    transition: box-shadow 0.8s ease;
+  }
+
+  /* Top opening rim */
+  .beaker-top {
+    position: absolute;
+    top: 24px; left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.18);
+    border-radius: 4px;
+    background: rgba(255,255,255,0.03);
+  }
+  /* Spout */
+  .beaker-spout {
+    position: absolute;
+    top: 14px; right: 4px;
+    width: 18px;
+    height: 12px;
+    border: 2px solid rgba(255,255,255,0.18);
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    background: rgba(255,255,255,0.02);
+  }
+
+  /* Liquid inside */
+  .liquid {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 50%;
+    background: var(--accent);
+    transition: height 0.8s ease, background-color 0.8s ease, box-shadow 0.8s ease;
+    border-radius: 0 0 20px 20px;
+    overflow: hidden;
+  }
+
+  /* Wave surface */
+  .wave {
+    position: absolute;
+    top: -8px; left: -20%;
+    width: 140%;
+    height: 18px;
+    background: inherit;
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    animation: wave 2.4s linear infinite;
+  }
+  .wave2 {
+    position: absolute;
+    top: -5px; left: -20%;
+    width: 140%;
+    height: 12px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+    animation: wave 1.8s linear infinite reverse;
+  }
+  @keyframes wave {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(14%); }
+  }
+
+  /* Bubbles */
+  .bubble {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.28);
+    animation: rise linear infinite;
+  }
+  @keyframes rise {
+    0%   { transform: translateY(0) scale(1); opacity: 0.7; }
+    80%  { opacity: 0.5; }
+    100% { transform: translateY(-260px) scale(0.5); opacity: 0; }
+  }
+
+  /* Glow on beaker */
+  .beaker-glow {
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 290px;
+    border-radius: 0 0 22px 22px;
+    pointer-events: none;
+    transition: box-shadow 0.8s ease;
+  }
+
+  /* Scale markings */
+  .scale-marks {
+    position: absolute;
+    right: -22px;
+    bottom: 8px;
+    height: 270px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .scale-mark {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .scale-mark::before {
+    content: '';
+    width: 8px;
+    height: 1px;
+    background: rgba(255,255,255,0.2);
+    display: block;
+  }
+  .scale-mark span {
+    font-size: 0.6rem;
+    color: rgba(255,255,255,0.3);
+    font-weight: 500;
+  }
+
+  /* Temp label below */
+  .temp-label {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--accent);
+    transition: color 0.8s;
+    letter-spacing: 0.02em;
+  }
+  .temp-sublabel {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  /* Responsive */
+  @media (max-width: 660px) {
+    .container {
+      grid-template-columns: 1fr;
+      gap: 2.5rem;
     }
-
-    :root{
-      --bg:#080810;
-      --card:rgba(255,255,255,0.04);
-      --border:rgba(255,255,255,0.08);
-      --gold:#f5c518;
-      --text:#f8f8f8;
-      --muted:#9ca3af;
-    }
-
-    body{
-      min-height:100vh;
-      overflow-x:hidden;
-      overflow-y:auto;
-      background:
-      radial-gradient(circle at top, rgba(245,197,24,0.08), transparent 25%),
-      radial-gradient(circle at bottom, rgba(59,130,246,0.06), transparent 20%),
-      var(--bg);
-
-      font-family:'Space Grotesk',sans-serif;
-
-      display:flex;
-      justify-content:center;
-      align-items:center;
-
-      padding:30px;
-      color:white;
-      position:relative;
-    }
-
-    .stars{
-      position:fixed;
-      inset:0;
-      z-index:0;
-      pointer-events:none;
-    }
-
-    .star{
-      position:absolute;
-      width:2px;
-      height:2px;
-      border-radius:50%;
-      background:white;
-      opacity:0.5;
-      animation:twinkle 4s infinite ease-in-out;
-    }
-
-    @keyframes twinkle{
-      0%,100%{
-        opacity:0.2;
-      }
-      50%{
-        opacity:0.9;
-      }
-    }
-
-    .side-planet{
-      position:fixed;
-      width:420px;
-      height:420px;
-      border-radius:50%;
-      right:-140px;
-      top:50%;
-      transform:translateY(-50%);
-
-      background:
-      radial-gradient(circle at 30% 30%, #fff2b0, #f5c518);
-
-      box-shadow:
-      0 0 80px rgba(245,197,24,0.3),
-      0 0 180px rgba(245,197,24,0.15);
-
-      opacity:0.18;
-      z-index:0;
-    }
-
-    .layout{
-      width:100%;
-      max-width:1200px;
-
-      display:grid;
-      grid-template-columns:420px 1fr;
-      gap:30px;
-
-      position:relative;
-      z-index:2;
-    }
-
-    .left-panel{
-      border:1px solid rgba(255,255,255,0.08);
-      background:rgba(255,255,255,0.03);
-      backdrop-filter:blur(18px);
-
-      border-radius:28px;
-
-      padding:40px 30px;
-
-      display:flex;
-      flex-direction:column;
-      justify-content:space-between;
-
-      min-height:760px;
-
-      overflow:hidden;
-      position:relative;
-    }
-
-    .cover-planet{
-      position:absolute;
-      width:500px;
-      height:500px;
-      border-radius:50%;
-
-      left:-240px;
-      top:120px;
-
-      background:
-      radial-gradient(circle at 30% 30%, #fff4bf, #f5c518);
-
-      box-shadow:
-      0 0 90px rgba(245,197,24,0.25);
-
-      opacity:0.95;
-    }
-
-    .left-content{
-      position:relative;
-      z-index:2;
-    }
-
-    .small-text{
-      letter-spacing:4px;
-      font-size:0.8rem;
-      color:var(--gold);
-      text-transform:uppercase;
-    }
-
-    .main-title{
-      font-size:4rem;
-      line-height:0.95;
-      font-weight:700;
-      margin-top:18px;
-    }
-
-    .main-title span{
-      color:var(--gold);
-    }
-
-    .desc{
-      margin-top:24px;
-      color:#b6b6b6;
-      line-height:1.7;
-      font-size:0.95rem;
-      max-width:300px;
-    }
-
-    .author{
-      position:relative;
-      z-index:2;
-    }
-
-    .author p{
-      color:#999;
-      margin-bottom:10px;
-    }
-
-    .author h3{
-      color:var(--gold);
-      font-size:1.6rem;
-    }
-
-    .converter{
-      border:1px solid rgba(255,255,255,0.08);
-      background:rgba(255,255,255,0.03);
-      backdrop-filter:blur(18px);
-
-      border-radius:28px;
-
-      padding:40px;
-
-      min-height:760px;
-    }
-
-    .heading{
-      color:var(--gold);
-      font-size:1rem;
-      letter-spacing:2px;
-      text-transform:uppercase;
-      margin-bottom:12px;
-    }
-
-    h1{
-      font-size:2.4rem;
-      margin-bottom:30px;
-    }
-
-    input{
-      width:100%;
-      padding:18px 20px;
-
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,0.08);
-
-      background:rgba(255,255,255,0.03);
-
-      color:white;
-      font-size:1rem;
-
-      outline:none;
-      transition:0.3s;
-      font-family:inherit;
-    }
-
-    input:focus{
-      border-color:rgba(245,197,24,0.5);
-
-      box-shadow:
-      0 0 20px rgba(245,197,24,0.12);
-    }
-
-    .units{
-      display:flex;
-      gap:14px;
-      margin-top:22px;
-      flex-wrap:wrap;
-    }
-
-    .unit-btn{
-      border:none;
-      cursor:pointer;
-
-      padding:14px 22px;
-
-      border-radius:16px;
-
-      background:rgba(255,255,255,0.04);
-
-      border:1px solid rgba(255,255,255,0.08);
-
-      color:white;
-
-      font-family:inherit;
-      font-weight:600;
-
-      transition:0.3s;
-    }
-
-    .unit-btn:hover{
-      transform:translateY(-2px);
-    }
-
-    .unit-btn.active{
-      background:var(--gold);
-      color:black;
-
-      box-shadow:
-      0 0 20px rgba(245,197,24,0.25);
-    }
-
-    .orb-wrap{
-      display:flex;
-      justify-content:center;
-      margin:50px 0;
-    }
-
-    .orb{
-      width:220px;
-      height:220px;
-
-      border-radius:50%;
-
-      background:
-      radial-gradient(circle at 30% 30%, #fff7cc, #f5c518);
-
-      box-shadow:
-      0 0 50px rgba(245,197,24,0.45),
-      0 0 120px rgba(245,197,24,0.25);
-
-      transition:
-      background 0.6s ease,
-      box-shadow 0.6s ease;
-
-      animation:float 5s ease-in-out infinite;
-    }
-
-    @keyframes float{
-      0%,100%{
-        transform:translateY(0px);
-      }
-      50%{
-        transform:translateY(-12px);
-      }
-    }
-
-    .results{
-      display:grid;
-      gap:18px;
-    }
-
-    .card{
-      background:rgba(255,255,255,0.03);
-
-      border:1px solid rgba(255,255,255,0.08);
-
-      padding:22px;
-
-      border-radius:22px;
-    }
-
-    .label{
-      color:#9ca3af;
-      margin-bottom:10px;
-    }
-
-    .value{
-      font-size:1.5rem;
-      font-weight:700;
-    }
-
-    .error{
-      margin-top:14px;
-      color:#ff7272;
-      min-height:20px;
-    }
-
-    @media(max-width:980px){
-
-      .layout{
-        grid-template-columns:1fr;
-      }
-
-      .left-panel{
-        min-height:420px;
-      }
-
-      .converter{
-        min-height:auto;
-      }
-
-      .cover-planet{
-        width:380px;
-        height:380px;
-      }
-
-    }
-
-    @media(max-width:600px){
-
-      body{
-        padding:16px;
-        align-items:flex-start;
-      }
-
-      .converter{
-        padding:26px;
-      }
-
-      .left-panel{
-        padding:30px 24px;
-      }
-
-      .main-title{
-        font-size:2.8rem;
-      }
-
-      h1{
-        font-size:1.9rem;
-      }
-
-      .orb{
-        width:170px;
-        height:170px;
-      }
-
-      .units{
-        gap:10px;
-      }
-
-      .unit-btn{
-        flex:1;
-        min-width:90px;
-      }
-
-      .side-planet{
-        width:260px;
-        height:260px;
-        right:-100px;
-      }
-
-    }
-
-  </style>
+    .right { padding-top: 0; }
+  }
+</style>
 </head>
-
 <body>
 
-  <div class="stars" id="stars"></div>
+<div class="container">
+  <!-- LEFT -->
+  <div class="left">
+    <h1>Temperature <span id="accentTitle">Converter</span></h1>
 
-  <div class="side-planet"></div>
-
-  <div class="layout">
-
-    <div class="left-panel">
-
-      <div class="cover-planet"></div>
-
-      <div class="left-content">
-
-        <div class="small-text">
-          Space Series
-        </div>
-
-        <div class="main-title">
-          SPACE <br>
-          <span>THERMOMETER</span>
-        </div>
-
-        <div class="desc">
-          A premium real-time temperature converter inspired by glowing planets and deep space aesthetics.
-        </div>
-
+    <div>
+      <div class="input-wrap">
+        <input type="text" id="tempInput" placeholder="Enter temperature…" autocomplete="off" />
+        <span class="error-msg" id="errMsg">Only numbers allowed</span>
       </div>
-
-      <div class="author">
-        <p>Internship Project</p>
-        <h3>Gaurav Tripathi</h3>
+      <div class="unit-toggles" style="margin-top:1.1rem;">
+        <button class="unit-btn active" data-unit="C">°C Celsius</button>
+        <button class="unit-btn" data-unit="F">°F Fahrenheit</button>
+        <button class="unit-btn" data-unit="K">K Kelvin</button>
       </div>
-
     </div>
 
-    <div class="converter">
-
-      <div class="heading">
-        Temperature Converter
+    <div class="cards">
+      <div class="card" id="card-C">
+        <span class="card-label">Celsius</span>
+        <span class="card-value" id="val-C">—<span class="card-unit">°C</span></span>
       </div>
-
-      <h1>Convert Instantly</h1>
-
-      <input
-        type="text"
-        id="tempInput"
-        placeholder="Enter temperature value"
-      >
-
-      <div class="units">
-
-        <button class="unit-btn active" data-unit="C">
-          Celsius
-        </button>
-
-        <button class="unit-btn" data-unit="F">
-          Fahrenheit
-        </button>
-
-        <button class="unit-btn" data-unit="K">
-          Kelvin
-        </button>
-
+      <div class="card" id="card-F">
+        <span class="card-label">Fahrenheit</span>
+        <span class="card-value" id="val-F">—<span class="card-unit">°F</span></span>
       </div>
-
-      <div class="error" id="error"></div>
-
-      <div class="orb-wrap">
-        <div class="orb" id="orb"></div>
+      <div class="card" id="card-K">
+        <span class="card-label">Kelvin</span>
+        <span class="card-value" id="val-K">—<span class="card-unit">K</span></span>
       </div>
-
-      <div class="results">
-
-        <div class="card">
-          <div class="label">Celsius</div>
-          <div class="value" id="celsius">-- °C</div>
-        </div>
-
-        <div class="card">
-          <div class="label">Fahrenheit</div>
-          <div class="value" id="fahrenheit">-- °F</div>
-        </div>
-
-        <div class="card">
-          <div class="label">Kelvin</div>
-          <div class="value" id="kelvin">-- K</div>
-        </div>
-
-      </div>
-
     </div>
-
   </div>
 
-  <script>
+  <!-- RIGHT -->
+  <div class="right">
+    <div class="beaker-wrap">
+      <!-- Spout & top -->
+      <div class="beaker-spout"></div>
+      <div class="beaker-top"></div>
 
-    const input = document.getElementById("tempInput");
+      <div class="beaker" id="beaker">
+        <div class="beaker-body" id="beakerBody">
+          <div class="liquid" id="liquid">
+            <div class="wave"></div>
+            <div class="wave2"></div>
+            <!-- Bubbles injected by JS -->
+          </div>
+        </div>
+        <div class="beaker-glow" id="beakerGlow"></div>
+        <div class="scale-marks">
+          <div class="scale-mark"><span>HOT</span></div>
+          <div class="scale-mark"><span></span></div>
+          <div class="scale-mark"><span></span></div>
+          <div class="scale-mark"><span>MID</span></div>
+          <div class="scale-mark"><span></span></div>
+          <div class="scale-mark"><span></span></div>
+          <div class="scale-mark"><span>COLD</span></div>
+        </div>
+      </div>
+    </div>
 
-    const buttons = document.querySelectorAll(".unit-btn");
+    <div style="text-align:center;">
+      <div class="temp-label" id="tempLabel">— °C</div>
+      <div class="temp-sublabel" id="tempDesc">Enter a temperature</div>
+    </div>
+  </div>
+</div>
 
-    const celsiusEl = document.getElementById("celsius");
-    const fahrenheitEl = document.getElementById("fahrenheit");
-    const kelvinEl = document.getElementById("kelvin");
+<script>
+  const input = document.getElementById('tempInput');
+  const errMsg = document.getElementById('errMsg');
+  const liquid = document.getElementById('liquid');
+  const beakerBody = document.getElementById('beakerBody');
+  const beakerGlow = document.getElementById('beakerGlow');
+  const tempLabel = document.getElementById('tempLabel');
+  const tempDesc = document.getElementById('tempDesc');
+  const unitBtns = document.querySelectorAll('.unit-btn');
+  const cards = { C: document.getElementById('card-C'), F: document.getElementById('card-F'), K: document.getElementById('card-K') };
+  const vals = { C: document.getElementById('val-C'), F: document.getElementById('val-F'), K: document.getElementById('val-K') };
 
-    const errorEl = document.getElementById("error");
+  let activeUnit = 'C';
+  let currentCelsius = null;
 
-    const orb = document.getElementById("orb");
+  // ── Create bubbles ──
+  const bubbleData = [
+    { size: 5, left: 20, dur: 3.8, delay: 0 },
+    { size: 7, left: 50, dur: 5.2, delay: 1.1 },
+    { size: 4, left: 70, dur: 4.5, delay: 2.3 },
+    { size: 6, left: 35, dur: 6.0, delay: 0.7 },
+    { size: 4, left: 60, dur: 3.4, delay: 3.1 },
+  ];
+  bubbleData.forEach(b => {
+    const el = document.createElement('div');
+    el.className = 'bubble';
+    el.style.cssText = `width:${b.size}px;height:${b.size}px;left:${b.left}%;bottom:5%;animation-duration:${b.dur}s;animation-delay:-${b.delay}s;`;
+    liquid.appendChild(el);
+  });
 
-    let selectedUnit = "C";
-
-    buttons.forEach(btn => {
-
-      btn.addEventListener("click", () => {
-
-        buttons.forEach(b => b.classList.remove("active"));
-
-        btn.classList.add("active");
-
-        selectedUnit = btn.dataset.unit;
-
-        convertTemperature();
-
-      });
-
+  // ── Unit switch ──
+  unitBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      unitBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeUnit = btn.dataset.unit;
+      updateCards();
+      syncInputToUnit();
     });
+  });
 
-    input.addEventListener("input", () => {
+  function syncInputToUnit() {
+    if (currentCelsius === null) return;
+    const v = fromCelsius(currentCelsius, activeUnit);
+    input.value = fmt(v);
+  }
 
-      requestAnimationFrame(convertTemperature);
+  // ── Input handling ──
+  input.addEventListener('input', () => {
+    const raw = input.value.trim();
+    if (raw === '' || raw === '-') {
+      errMsg.classList.remove('show');
+      input.classList.remove('error');
+      currentCelsius = null;
+      resetDisplay();
+      return;
+    }
+    if (!/^-?\d*\.?\d*$/.test(raw)) {
+      errMsg.classList.add('show');
+      input.classList.add('error');
+      return;
+    }
+    errMsg.classList.remove('show');
+    input.classList.remove('error');
+    const num = parseFloat(raw);
+    if (isNaN(num)) return;
+    currentCelsius = toCelsius(num, activeUnit);
+    updateAll();
+  });
 
+  // ── Conversions ──
+  function toCelsius(v, unit) {
+    if (unit === 'C') return v;
+    if (unit === 'F') return (v - 32) * 5/9;
+    if (unit === 'K') return v - 273.15;
+  }
+  function fromCelsius(c, unit) {
+    if (unit === 'C') return c;
+    if (unit === 'F') return c * 9/5 + 32;
+    if (unit === 'K') return c + 273.15;
+  }
+  function fmt(n) { return Number.isInteger(n) ? n.toString() : n.toFixed(2); }
+
+  // ── Color logic ──
+  function getColor(c) {
+    if (c < 0)   return '#0ea5e9';
+    if (c < 15)  return '#06b6d4';
+    if (c < 30)  return '#f5c518';
+    if (c < 45)  return '#f97316';
+    return '#ef4444';
+  }
+  function getDesc(c) {
+    if (c < 0)   return 'Freezing cold ❄️';
+    if (c < 15)  return 'Cool & crisp 🌊';
+    if (c < 30)  return 'Warm & pleasant ☀️';
+    if (c < 45)  return 'Hot 🔥';
+    return 'Extreme heat 🌋';
+  }
+
+  // ── Fill level: map Celsius to 5%–95% ──
+  function getFill(c) {
+    const min = -50, max = 120;
+    const clamped = Math.max(min, Math.min(max, c));
+    return 5 + ((clamped - min) / (max - min)) * 90;
+  }
+
+  function updateAll() {
+    const c = currentCelsius;
+    const color = getColor(c);
+
+    // CSS var update
+    document.documentElement.style.setProperty('--accent', color);
+
+    // Liquid
+    liquid.style.height = getFill(c) + '%';
+    liquid.style.backgroundColor = color;
+    liquid.style.boxShadow = `0 0 18px ${color}88`;
+
+    // Beaker glow
+    beakerBody.style.boxShadow = `0 0 28px ${color}50, inset 0 0 12px ${color}22`;
+
+    // Label
+    const cVal = fromCelsius(c, 'C');
+    tempLabel.textContent = fmt(cVal) + ' °C';
+    tempLabel.style.color = color;
+    tempDesc.textContent = getDesc(c);
+
+    updateCards();
+  }
+
+  function updateCards() {
+    const c = currentCelsius;
+    ['C','F','K'].forEach(u => {
+      const card = cards[u];
+      const valEl = vals[u];
+      const unitSpan = valEl.querySelector('.card-unit');
+
+      card.classList.toggle('dimmed', u === activeUnit);
+      card.classList.toggle('active-card', u !== activeUnit && c !== null);
+
+      if (c !== null) {
+        const v = fromCelsius(c, u);
+        const unitStr = u === 'C' ? '°C' : u === 'F' ? '°F' : 'K';
+        // Animate change
+        valEl.style.opacity = '0';
+        valEl.style.transform = 'translateY(-4px)';
+        setTimeout(() => {
+          valEl.childNodes[0].textContent = fmt(v);
+          if (!unitSpan) {
+            const s = document.createElement('span');
+            s.className = 'card-unit';
+            s.textContent = unitStr;
+            valEl.appendChild(s);
+          } else {
+            unitSpan.textContent = unitStr;
+          }
+          valEl.style.opacity = '1';
+          valEl.style.transform = 'translateY(0)';
+          valEl.style.transition = 'opacity 0.25s, transform 0.25s';
+        }, 80);
+      } else {
+        valEl.childNodes[0].textContent = '—';
+      }
     });
+  }
 
-    function convertTemperature(){
+  function resetDisplay() {
+    ['C','F','K'].forEach(u => {
+      cards[u].classList.remove('dimmed','active-card');
+      vals[u].childNodes[0].textContent = '—';
+    });
+    cards[activeUnit].classList.add('dimmed');
+    liquid.style.height = '30%';
+    liquid.style.backgroundColor = '#0ea5e9';
+    liquid.style.boxShadow = '';
+    beakerBody.style.boxShadow = '';
+    document.documentElement.style.setProperty('--accent', '#0ea5e9');
+    tempLabel.textContent = '— °C';
+    tempLabel.style.color = '#0ea5e9';
+    tempDesc.textContent = 'Enter a temperature';
+  }
 
-      const value = input.value.trim();
-
-      if(value === ""){
-
-        resetValues();
-
-        errorEl.textContent = "";
-
-        updateOrb(20);
-
-        return;
-      }
-
-      if(!/^[-+]?\d*\.?\d+$/.test(value)){
-
-        errorEl.textContent = "Please enter numbers only.";
-
-        resetValues();
-
-        return;
-      }
-
-      errorEl.textContent = "";
-
-      const temp = parseFloat(value);
-
-      let c,f,k;
-
-      if(selectedUnit === "C"){
-
-        c = temp;
-        f = (temp * 9/5) + 32;
-        k = temp + 273.15;
-
-      }
-
-      else if(selectedUnit === "F"){
-
-        c = (temp - 32) * 5/9;
-        f = temp;
-        k = c + 273.15;
-
-      }
-
-      else{
-
-        c = temp - 273.15;
-        f = (c * 9/5) + 32;
-        k = temp;
-
-      }
-
-      celsiusEl.textContent = `${c.toFixed(2)} °C`;
-
-      fahrenheitEl.textContent = `${f.toFixed(2)} °F`;
-
-      kelvinEl.textContent = `${k.toFixed(2)} K`;
-
-      updateOrb(c);
-
-    }
-
-    function resetValues(){
-
-      celsiusEl.textContent = "-- °C";
-      fahrenheitEl.textContent = "-- °F";
-      kelvinEl.textContent = "-- K";
-
-    }
-
-    function updateOrb(celsius){
-
-      let gradient = "";
-      let glow = "";
-
-      if(celsius < 0){
-
-        gradient =
-        "radial-gradient(circle at 30% 30%, #dbeafe, #2563eb)";
-
-        glow =
-        `
-        0 0 50px rgba(59,130,246,0.55),
-        0 0 120px rgba(59,130,246,0.25)
-        `;
-      }
-
-      else if(celsius <= 30){
-
-        gradient =
-        "radial-gradient(circle at 30% 30%, #fff7cc, #f5c518)";
-
-        glow =
-        `
-        0 0 50px rgba(245,197,24,0.45),
-        0 0 120px rgba(245,197,24,0.25)
-        `;
-      }
-
-      else{
-
-        gradient =
-        "radial-gradient(circle at 30% 30%, #ffd1a8, #ff5a1f)";
-
-        glow =
-        `
-        0 0 50px rgba(255,90,31,0.5),
-        0 0 120px rgba(255,90,31,0.25)
-        `;
-      }
-
-      orb.style.background = gradient;
-
-      orb.style.boxShadow = glow;
-
-    }
-
-    updateOrb(20);
-
-    const stars = document.getElementById("stars");
-
-    for(let i=0;i<120;i++){
-
-      const star = document.createElement("div");
-
-      star.classList.add("star");
-
-      star.style.left = Math.random()*100 + "%";
-
-      star.style.top = Math.random()*100 + "%";
-
-      const size = Math.random()*2 + 1;
-
-      star.style.width = size + "px";
-      star.style.height = size + "px";
-
-      star.style.animationDelay = Math.random()*5 + "s";
-
-      stars.appendChild(star);
-
-    }
-
-  </script>
-
+  // Init state
+  cards[activeUnit].classList.add('dimmed');
+</script>
 </body>
 </html>
-```
