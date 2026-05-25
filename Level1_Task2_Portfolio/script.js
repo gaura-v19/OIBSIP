@@ -1,5 +1,4 @@
 /* ══ CURSOR ══════════════════════════════════════ */
-
 const cur   = document.getElementById('cursor');
 const trail = document.getElementById('cursor-trail');
 let mx=0, my=0, tx=0, ty=0;
@@ -31,7 +30,6 @@ function setSize(){ cv.width = innerWidth; cv.height = innerHeight; }
 setSize();
 window.addEventListener('resize', () => { setSize(); buildStars(); buildNebula(); });
 
-/* Stars */
 let stars = [];
 function buildStars(){
   stars = Array.from({length:280}, () => ({
@@ -45,14 +43,13 @@ function buildStars(){
 }
 buildStars();
 
-/* Nebula blobs */
 let nebula = [];
 function buildNebula(){
   const cols = [
-    [245,197,24],   // gold
-    [130,80,255],   // purple
-    [40,120,255],   // blue
-    [255,80,120],   // pink
+    [245,197,24],
+    [130,80,255],
+    [40,120,255],
+    [255,80,120],
   ];
   nebula = Array.from({length:6}, (_,i) => {
     const c = cols[i % cols.length];
@@ -67,7 +64,6 @@ function buildNebula(){
 }
 buildNebula();
 
-/* Shooting stars */
 let shoots = [];
 function spawnShoot(){
   const fromLeft = Math.random()<.5;
@@ -83,7 +79,6 @@ function spawnShoot(){
 }
 setInterval(spawnShoot, 650);
 
-/* Particles on click */
 let sparks = [];
 document.addEventListener('click', e => {
   for(let i=0;i<14;i++){
@@ -99,11 +94,9 @@ document.addEventListener('click', e => {
   }
 });
 
-/* ── DRAW LOOP ── */
 function draw(){
   ctx.clearRect(0,0,cv.width,cv.height);
 
-  /* nebula */
   nebula.forEach(n=>{
     const g = ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);
     g.addColorStop(0,   `rgba(${n.c},${n.a})`);
@@ -115,7 +108,6 @@ function draw(){
     ctx.fill();
   });
 
-  /* stars */
   stars.forEach(s=>{
     s.a += s.da;
     if(s.a>1||s.a<0) s.da*=-1;
@@ -127,7 +119,6 @@ function draw(){
     ctx.fill();
   });
 
-  /* shooting stars */
   shoots.forEach((s,i)=>{
     s.tail.push({x:s.x,y:s.y});
     if(s.tail.length>20) s.tail.shift();
@@ -147,10 +138,9 @@ function draw(){
     if(s.y>cv.height+50||s.x<-80||s.x>cv.width+80) shoots.splice(i,1);
   });
 
-  /* click sparks */
   sparks.forEach((p,i)=>{
     p.x+=p.vx; p.y+=p.vy;
-    p.vy+=.07; // gravity
+    p.vy+=.07;
     p.life -= .035;
     p.a = p.life;
     if(p.life<=0){sparks.splice(i,1);return;}
@@ -177,35 +167,35 @@ function type(){
 }
 type();
 
-/* ══ NAVBAR SCROLL ════════════════════════════════ */
+/* ══ NAVBAR ═══════════════════════════════════════ */
 window.addEventListener('scroll',()=>{
   document.getElementById('nav').classList.toggle('stuck',scrollY>50);
 });
 
-/* ══ HAMBURGER ════════════════════════════════════ */
 document.getElementById('burger').addEventListener('click',()=>{
   document.getElementById('navLinks').classList.toggle('open');
 });
 
 /* ══ SCROLL REVEAL ════════════════════════════════ */
-document.querySelectorAll(
-  '.sk,.pcard,.chip,.ctr,.clink,.s-label,.s-title,.about-body,.about-chips'
-).forEach(el=>{
-  el.classList.add('reveal');
-});
-
-new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); } });
-},{threshold:.1}).observe(
-  ...[]  // placeholder — replaced below
+const revealEls = document.querySelectorAll(
+  '.sk, .pcard, .chip, .ctr, .clink, .s-label, .s-title, .about-body, .about-chips, .contact-sub, .proj-grid, .skills-wrap, .contact-grid'
 );
 
-// Proper observer
-const obs = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
-},{threshold:.1});
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.08 });
 
-document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+revealEls.forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(28px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
 
 /* ══ SKILL TILT ═══════════════════════════════════ */
 document.querySelectorAll('.sk').forEach(card=>{
@@ -217,7 +207,7 @@ document.querySelectorAll('.sk').forEach(card=>{
     card.style.transition='transform 0s';
   });
   card.addEventListener('mouseleave',()=>{
-    card.style.transform='';
+    card.style.transform='translateY(0)';
     card.style.transition='all .35s';
   });
 });
