@@ -1,4 +1,5 @@
 /* ══ CURSOR ══════════════════════════════════════ */
+
 const cur   = document.getElementById('cursor');
 const trail = document.getElementById('cursor-trail');
 let mx=0, my=0, tx=0, ty=0;
@@ -7,7 +8,7 @@ document.addEventListener('mousemove', e => {
   mx = e.clientX; my = e.clientY;
   cur.style.left = mx + 'px';
   cur.style.top  = my + 'px';
-});
+}, { passive: true });
 
 (function animTrail(){
   tx += (mx - tx) * .1;

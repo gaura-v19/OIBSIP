@@ -28,7 +28,7 @@ body {
   width: 12px; height: 12px;
   background: var(--gold);
   border-radius: 50%;
-  pointer-events: none;
+  pointer-events: none;   /* ✅ already there - keep it */
   z-index: 99999;
   transform: translate(-50%,-50%);
   box-shadow: 0 0 12px var(--gold), 0 0 28px rgba(245,197,24,.5);
@@ -40,7 +40,7 @@ body {
   width: 38px; height: 38px;
   border: 1.5px solid rgba(245,197,24,.45);
   border-radius: 50%;
-  pointer-events: none;
+  pointer-events: none;   /* ✅ already there - keep it */
   z-index: 99998;
   transform: translate(-50%,-50%);
   will-change: left, top;
@@ -54,7 +54,7 @@ body.hovered #cursor-trail  { width:56px; height:56px; border-color:var(--gold);
   position: fixed;
   inset: 0;
   z-index: 0;
-  pointer-events: none;
+  pointer-events: none;  /* ← must be none */
 }
 
 /* ─── NAVBAR ───────────────────────────────────── */
@@ -728,4 +728,27 @@ footer p{color:var(--muted);font-size:15px;}
   }
   .nav-links.open{display:flex;}
   .burger{display:flex;}
+}
+/* ── CRITICAL CLICK FIX ── */
+a, button {
+  cursor: none !important;
+  position: relative;
+  z-index: 100;
+}
+
+.pcard-links a,
+.cta-main,
+.cta-ghost,
+.clink,
+.socials a,
+.nav-links a {
+  pointer-events: auto !important;
+  z-index: 500 !important;
+  position: relative !important;
+}
+
+/* ── SECTION Z-INDEX FIX ── */
+section, footer, #nav {
+  position: relative;
+  z-index: 2;
 }
