@@ -506,17 +506,35 @@
   for (let i = 0; i < PARTICLE_COUNT; i++) particles.push(randomParticle(false));
 
   function drawParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const {r,g,b} = hexToRgb(accentHex);
-    particles.forEach(p => {
-      const pAlpha = p.alpha * (0.7 + 0.3 * Math.sin(p.pulse));
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${r},${g},${b},${pAlpha})`; ctx.fill();
-      p.y -= p.speed; p.x += p.drift; p.pulse += 0.018;
-      if (p.y < -10) Object.assign(p, randomParticle(true));
-    });
-    requestAnimationFrame(drawParticles);
-  }
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const {r,g,b} = hexToRgb(accentHex);
+
+  particles.forEach(p => {
+    const pAlpha = p.alpha * (0.75 + 0.25 * Math.sin(p.pulse));
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    
+    // Glow effect (Neon effect ke liye)
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = `rgba(${r},${g},${b},${pAlpha})`;
+    
+    ctx.fillStyle = `rgba(${r},${g},${b},${pAlpha})`;
+    ctx.fill();
+
+    p.y     -= p.speed;
+    p.x     += p.drift;
+    p.pulse += 0.025; // Pulse transition thoda fast kiya
+
+    if (p.y < -10) {
+      Object.assign(p, randomParticle(true));
+    }
+  });
+
+  // Shadow reset taaki performace drop na ho
+  ctx.shadowBlur = 0;
+
+  requestAnimationFrame(drawParticles);
+}
   drawParticles();
 
   cards[activeUnit].classList.add('dimmed');
