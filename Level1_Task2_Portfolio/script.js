@@ -1,216 +1,222 @@
-/* ── CURSOR ── */
-const dot = document.getElementById('cursorDot');
-const ring = document.getElementById('cursorRing');
-
-let mouseX = 0, mouseY = 0;
-let ringX = 0, ringY = 0;
+/* ══ CURSOR ══════════════════════════════════════ */
+const cur   = document.getElementById('cursor');
+const trail = document.getElementById('cursor-trail');
+let mx=0, my=0, tx=0, ty=0;
 
 document.addEventListener('mousemove', e => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-  dot.style.left = mouseX + 'px';
-  dot.style.top  = mouseY + 'px';
+  mx = e.clientX; my = e.clientY;
+  cur.style.left = mx + 'px';
+  cur.style.top  = my + 'px';
 });
 
-function animateRing() {
-  ringX += (mouseX - ringX) * 0.12;
-  ringY += (mouseY - ringY) * 0.12;
-  ring.style.left = ringX + 'px';
-  ring.style.top  = ringY + 'px';
-  requestAnimationFrame(animateRing);
-}
-animateRing();
+(function animTrail(){
+  tx += (mx - tx) * .1;
+  ty += (my - ty) * .1;
+  trail.style.left = tx + 'px';
+  trail.style.top  = ty + 'px';
+  requestAnimationFrame(animTrail);
+})();
 
-/* ── GALAXY CANVAS ── */
-const canvas = document.getElementById('galaxy');
-const ctx    = canvas.getContext('2d');
+document.querySelectorAll('a, button, .sk, .pcard, .chip, .ctr').forEach(el => {
+  el.addEventListener('mouseenter', () => document.body.classList.add('hovered'));
+  el.addEventListener('mouseleave', () => document.body.classList.remove('hovered'));
+});
 
-function resize() {
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
-}
-resize();
-window.addEventListener('resize', () => { resize(); initStars(); });
+/* ══ STARFIELD ═══════════════════════════════════ */
+const cv  = document.getElementById('starfield');
+const ctx = cv.getContext('2d');
+
+function setSize(){ cv.width = innerWidth; cv.height = innerHeight; }
+setSize();
+window.addEventListener('resize', () => { setSize(); buildStars(); buildNebula(); });
 
 /* Stars */
 let stars = [];
-function initStars() {
-  stars = Array.from({ length: 220 }, () => ({
-    x: Math.random() * canvas.width,
-    y: Math.random() * canvas.height,
-    r: Math.random() * 1.6 + 0.2,
-    alpha: Math.random(),
-    spd: 0.003 + Math.random() * 0.005,
-    gold: Math.random() < 0.06   // 6% golden stars
+function buildStars(){
+  stars = Array.from({length:280}, () => ({
+    x: Math.random()*cv.width,
+    y: Math.random()*cv.height,
+    r: Math.random()*1.8+.15,
+    a: Math.random(),
+    da: .002 + Math.random()*.006,
+    gold: Math.random() < .07
   }));
 }
-initStars();
+buildStars();
 
-/* Asteroids */
-let asteroids = [];
-function spawnAsteroid() {
-  const fromLeft = Math.random() < 0.5;
-  asteroids.push({
-    x: fromLeft ? -20 : canvas.width + 20,
-    y: Math.random() * canvas.height * 0.6,
-    size: 1.5 + Math.random() * 3,
-    vx: fromLeft ? 1.5 + Math.random() * 2.5 : -(1.5 + Math.random() * 2.5),
-    vy: 0.8 + Math.random() * 1.8,
-    alpha: 0.7 + Math.random() * 0.3,
-    tail: []
+/* Nebula blobs */
+let nebula = [];
+function buildNebula(){
+  const cols = [
+    [245,197,24],   // gold
+    [130,80,255],   // purple
+    [40,120,255],   // blue
+    [255,80,120],   // pink
+  ];
+  nebula = Array.from({length:6}, (_,i) => {
+    const c = cols[i % cols.length];
+    return {
+      x: Math.random()*cv.width,
+      y: Math.random()*cv.height,
+      r: 120 + Math.random()*200,
+      c,
+      a: .025 + Math.random()*.035,
+    };
   });
 }
-setInterval(spawnAsteroid, 700);
+buildNebula();
 
-/* Nebula clouds */
-const nebulaColors = [
-  'rgba(245,197,24,', 'rgba(180,80,255,', 'rgba(50,130,255,'
-];
-const nebulae = Array.from({ length: 5 }, (_, i) => ({
-  x: Math.random() * innerWidth,
-  y: Math.random() * innerHeight,
-  r: 100 + Math.random() * 200,
-  color: nebulaColors[i % nebulaColors.length],
-  alpha: 0.03 + Math.random() * 0.04
-}));
+/* Shooting stars */
+let shoots = [];
+function spawnShoot(){
+  const fromLeft = Math.random()<.5;
+  shoots.push({
+    x: fromLeft ? -20 : cv.width+20,
+    y: Math.random()*cv.height*.65,
+    vx: fromLeft ? 2+Math.random()*3 : -(2+Math.random()*3),
+    vy: .6+Math.random()*1.6,
+    size: 1.5+Math.random()*2.5,
+    a: .75+Math.random()*.25,
+    tail: [],
+  });
+}
+setInterval(spawnShoot, 650);
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+/* Particles on click */
+let sparks = [];
+document.addEventListener('click', e => {
+  for(let i=0;i<14;i++){
+    const angle = Math.random()*Math.PI*2;
+    const speed = 1.5+Math.random()*3.5;
+    sparks.push({
+      x:e.clientX, y:e.clientY,
+      vx:Math.cos(angle)*speed,
+      vy:Math.sin(angle)*speed,
+      r:1.5+Math.random()*2.5,
+      a:1, life:1
+    });
+  }
+});
 
-  /* Nebula */
-  nebulae.forEach(n => {
-    const g = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r);
-    g.addColorStop(0,   n.color + n.alpha + ')');
-    g.addColorStop(0.5, n.color + (n.alpha * 0.4) + ')');
-    g.addColorStop(1,   n.color + '0)');
+/* ── DRAW LOOP ── */
+function draw(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+
+  /* nebula */
+  nebula.forEach(n=>{
+    const g = ctx.createRadialGradient(n.x,n.y,0,n.x,n.y,n.r);
+    g.addColorStop(0,   `rgba(${n.c},${n.a})`);
+    g.addColorStop(.55, `rgba(${n.c},${n.a*.3})`);
+    g.addColorStop(1,   `rgba(${n.c},0)`);
     ctx.beginPath();
-    ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+    ctx.arc(n.x,n.y,n.r,0,Math.PI*2);
     ctx.fillStyle = g;
     ctx.fill();
   });
 
-  /* Stars */
-  stars.forEach(s => {
-    s.alpha += s.spd;
-    if (s.alpha > 1 || s.alpha < 0) s.spd *= -1;
+  /* stars */
+  stars.forEach(s=>{
+    s.a += s.da;
+    if(s.a>1||s.a<0) s.da*=-1;
     ctx.beginPath();
-    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
     ctx.fillStyle = s.gold
-      ? `rgba(245,197,24,${s.alpha})`
-      : `rgba(200,210,255,${s.alpha})`;
+      ? `rgba(245,197,24,${s.a})`
+      : `rgba(200,210,255,${s.a*.9})`;
     ctx.fill();
   });
 
-  /* Asteroids */
-  asteroids.forEach((a, i) => {
-    a.tail.push({ x: a.x, y: a.y });
-    if (a.tail.length > 16) a.tail.shift();
-
-    /* tail */
-    a.tail.forEach((t, ti) => {
-      const ratio = ti / a.tail.length;
+  /* shooting stars */
+  shoots.forEach((s,i)=>{
+    s.tail.push({x:s.x,y:s.y});
+    if(s.tail.length>20) s.tail.shift();
+    s.tail.forEach((t,ti)=>{
+      const ratio = ti/s.tail.length;
       ctx.beginPath();
-      ctx.arc(t.x, t.y, a.size * ratio * 0.9, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(245,197,24,${ratio * a.alpha * 0.35})`;
+      ctx.arc(t.x,t.y,s.size*ratio*.85,0,Math.PI*2);
+      ctx.fillStyle=`rgba(245,215,80,${ratio*s.a*.4})`;
       ctx.fill();
     });
-
-    /* body */
     ctx.beginPath();
-    ctx.arc(a.x, a.y, a.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(255,215,0,${a.alpha})`;
-    ctx.shadowBlur  = 10;
-    ctx.shadowColor = '#f5c518';
-    ctx.fill();
-    ctx.shadowBlur  = 0;
+    ctx.arc(s.x,s.y,s.size,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,220,80,${s.a})`;
+    ctx.shadowBlur=12; ctx.shadowColor='#f5c518';
+    ctx.fill(); ctx.shadowBlur=0;
+    s.x+=s.vx; s.y+=s.vy;
+    if(s.y>cv.height+50||s.x<-80||s.x>cv.width+80) shoots.splice(i,1);
+  });
 
-    a.x += a.vx;
-    a.y += a.vy;
-    if (a.y > canvas.height + 40 || a.x < -60 || a.x > canvas.width + 60)
-      asteroids.splice(i, 1);
+  /* click sparks */
+  sparks.forEach((p,i)=>{
+    p.x+=p.vx; p.y+=p.vy;
+    p.vy+=.07; // gravity
+    p.life -= .035;
+    p.a = p.life;
+    if(p.life<=0){sparks.splice(i,1);return;}
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    ctx.fillStyle=`rgba(245,197,24,${p.a})`;
+    ctx.shadowBlur=8; ctx.shadowColor='#f5c518';
+    ctx.fill(); ctx.shadowBlur=0;
   });
 
   requestAnimationFrame(draw);
 }
 draw();
 
-/* ── TYPEWRITER ── */
-const roles = [
-  'Software Developer 💻',
-  'Backend Engineer ⚙️',
-  'Frontend Crafter 🎨',
-  'Problem Solver 🚀',
-  'Full Stack Builder 🛠️'
-];
-let roleIdx = 0, charIdx = 0, deleting = false;
-const roleEl = document.getElementById('roleText');
-
-function type() {
-  const current = roles[roleIdx];
-  if (!deleting) {
-    roleEl.textContent = current.slice(0, ++charIdx);
-    if (charIdx === current.length) {
-      deleting = true;
-      setTimeout(type, 1800);
-      return;
-    }
-  } else {
-    roleEl.textContent = current.slice(0, --charIdx);
-    if (charIdx === 0) {
-      deleting = false;
-      roleIdx  = (roleIdx + 1) % roles.length;
-    }
-  }
-  setTimeout(type, deleting ? 45 : 80);
+/* ══ TYPEWRITER ═══════════════════════════════════ */
+const roles=['Software Developer 💻','Backend Engineer ⚙️','Frontend Crafter 🎨','Problem Solver 🚀','Full Stack Builder 🛠️'];
+let ri=0,ci=0,del=false;
+const tel=document.getElementById('typed');
+function type(){
+  const w=roles[ri];
+  if(!del){ tel.textContent=w.slice(0,++ci); if(ci===w.length){del=true;setTimeout(type,1800);return;} }
+  else{ tel.textContent=w.slice(0,--ci); if(ci===0){del=false;ri=(ri+1)%roles.length;} }
+  setTimeout(type,del?42:78);
 }
 type();
 
-/* ── NAVBAR SCROLL ── */
-window.addEventListener('scroll', () => {
-  document.getElementById('navbar')
-    .classList.toggle('scrolled', window.scrollY > 50);
+/* ══ NAVBAR SCROLL ════════════════════════════════ */
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('stuck',scrollY>50);
 });
 
-/* ── HAMBURGER ── */
-document.getElementById('hamburger').addEventListener('click', () => {
+/* ══ HAMBURGER ════════════════════════════════════ */
+document.getElementById('burger').addEventListener('click',()=>{
   document.getElementById('navLinks').classList.toggle('open');
 });
 
-/* ── SCROLL REVEAL ── */
-const observer = new IntersectionObserver(entries => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('revealed');
-      observer.unobserve(e.target);
-    }
-  });
-}, { threshold: 0.1 });
-
+/* ══ SCROLL REVEAL ════════════════════════════════ */
 document.querySelectorAll(
-  '.skill-card, .project-card, .about-card, .contact-card, .stat-box, .section-header'
-).forEach(el => {
-  el.style.opacity = '0';
-  el.style.transform = 'translateY(28px)';
-  el.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
-  observer.observe(el);
+  '.sk,.pcard,.chip,.ctr,.clink,.s-label,.s-title,.about-body,.about-chips'
+).forEach(el=>{
+  el.classList.add('reveal');
 });
 
-document.addEventListener('animationend', () => {}, { once: true });
+new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); } });
+},{threshold:.1}).observe(
+  ...[]  // placeholder — replaced below
+);
 
-// For IntersectionObserver revealed class
-const style = document.createElement('style');
-style.textContent = `.revealed { opacity: 1 !important; transform: translateY(0) !important; }`;
-document.head.appendChild(style);
+// Proper observer
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:.1});
 
-/* ── SKILL CARD TILT ── */
-document.querySelectorAll('.skill-card').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const rect = card.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width  - 0.5;
-    const y = (e.clientY - rect.top)  / rect.height - 0.5;
-    card.style.transform = `translateY(-10px) rotateX(${-y * 14}deg) rotateY(${x * 14}deg)`;
+document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+
+/* ══ SKILL TILT ═══════════════════════════════════ */
+document.querySelectorAll('.sk').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=(e.clientX-r.left)/r.width-.5;
+    const y=(e.clientY-r.top)/r.height-.5;
+    card.style.transform=`translateY(-10px) rotateX(${-y*16}deg) rotateY(${x*16}deg)`;
+    card.style.transition='transform 0s';
   });
-  card.addEventListener('mouseleave', () => {
-    card.style.transform = '';
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='';
+    card.style.transition='all .35s';
   });
 });
