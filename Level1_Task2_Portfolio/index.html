@@ -1,225 +1,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gaurav Tripathi | Portfolio</title>
-  <link rel="stylesheet" href="style.css"/>
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gaurav Tripathi | Portfolio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-  <!-- CURSOR -->
-  <div id="cursor"></div>
-  <div id="cursor-trail"></div>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    <div class="nebula"></div>
 
-  <!-- STAR FIELD CANVAS -->
-  <canvas id="starfield"></canvas>
+    <nav class="navbar">
+        <div class="nav-logo">GT<span>.</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
-  <!-- NAVBAR -->
-  <nav id="nav">
-    <div class="logo">GT<span>.</span></div>
-    <ul class="nav-links" id="navLinks">
-      <li><a href="#home">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <button class="burger" id="burger">
-      <span></span><span></span><span></span>
-    </button>
-  </nav>
-
-  <!-- HOME -->
-  <section id="home">
-    <div class="hero-wrap">
-      <p class="eyebrow"><span class="dot-live"></span> Open to opportunities</p>
-      <h1>
-        <span class="name-line">Hi, I'm</span>
-        <span class="name-big">Gaurav</span>
-        <span class="name-big col2">Tripathi</span>
-      </h1>
-      <p class="hero-role"><span id="typed"></span><span class="caret">|</span></p>
-      <p class="hero-bio">Software Developer who loves crafting apps that make a real difference — from robust backends to sleek frontends.</p>
-      <div class="hero-actions">
-        <a href="#projects" class="cta-main">See My Work <i class='bx bx-chevron-right'></i></a>
-        <a href="#contact" class="cta-ghost">Contact Me</a>
-      </div>
-      <div class="socials">
-        <a href="https://github.com/gaurav-o" target="_blank"><i class='bx bxl-github'></i></a>
-        <a href="https://www.linkedin.com/in/gaurav-tripathi-48337427a/" target="_blank"><i class='bx bxl-linkedin'></i></a>
-        <a href="mailto:gauravr20041904@gmail.com"><i class='bx bx-envelope'></i></a>
-      </div>
-    </div>
-
-    <!-- floating planet visual -->
-    <div class="planet-wrap">
-      <div class="planet-glow"></div>
-      <div class="planet">
-        <div class="crater c1"></div>
-        <div class="crater c2"></div>
-        <div class="crater c3"></div>
-        <div class="shine"></div>
-      </div>
-      <div class="p-ring r1"><span class="p-dot"></span></div>
-      <div class="p-ring r2"><span class="p-dot"></span></div>
-      <div class="p-ring r3"><span class="p-dot"></span></div>
-      <div class="label-tag t1">Spring Boot</div>
-      <div class="label-tag t2">React</div>
-      <div class="label-tag t3">PostgreSQL</div>
-    </div>
-
-    <div class="scroll-cue">
-      <div class="sc-bar"></div>
-      <p>scroll</p>
-    </div>
-  </section>
-
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="s-label">// about</div>
-    <h2 class="s-title">Who Am <em>I?</em></h2>
-    <div class="about-layout">
-      <div class="about-body">
-        <p>Hey! I'm <strong>Gaurav Tripathi</strong>, a Software Developer from <strong>Madhav Institute of Technology and Science, Gwalior</strong>.</p>
-        <p>I love the full journey of building something — from architecting a clean backend with Spring Boot to crafting a polished frontend with React. Every project is a chance to solve a real problem elegantly.</p>
-        <div class="counters">
-          <div class="ctr"><b>5+</b><span>Projects</span></div>
-          <div class="ctr"><b>2+</b><span>Stacks</span></div>
-          <div class="ctr"><b>∞</b><span>Curiosity</span></div>
+    <header id="home" class="hero-section">
+        <div class="hero-content">
+            <p class="hero-subtitle">Welcome to my universe</p>
+            <h1 class="hero-title">Gaurav Tripathi</h1>
+            <h2 class="hero-tagline">Java Stack Developer</h2>
+            <p class="hero-desc">Crafting robust backend architectures and seamless digital experiences across the cosmos.</p>
+            <div class="hero-cta">
+                <a href="#projects" class="btn btn-primary">View Orbit</a>
+                <a href="#contact" class="btn btn-secondary">Connect</a>
+            </div>
         </div>
-      </div>
-      <div class="about-chips">
-        <div class="chip"><i class='bx bx-code-alt'></i><div><h4>Clean Code</h4><p>Readable & maintainable</p></div></div>
-        <div class="chip"><i class='bx bx-bulb'></i><div><h4>Problem Solver</h4><p>Ideas → solutions</p></div></div>
-        <div class="chip"><i class='bx bx-rocket'></i><div><h4>Fast Learner</h4><p>Always exploring</p></div></div>
-      </div>
-    </div>
-  </section>
+    </header>
 
-  <!-- SKILLS -->
-  <section id="skills">
-    <div class="s-label">// skills</div>
-    <h2 class="s-title">What I <em>Know</em></h2>
-    <div class="skills-wrap">
-      <div class="sk" style="--c:#e76f00"><div class="sk-i"><i class='bx bxl-java'></i></div><p>Java</p></div>
-      <div class="sk" style="--c:#6db33f"><div class="sk-i"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/spring/spring-original.svg"/></div><p>Spring Boot</p></div>
-      <div class="sk" style="--c:#336791"><div class="sk-i"><i class='bx bxs-data'></i></div><p>PostgreSQL</p></div>
-      <div class="sk" style="--c:#61dafb"><div class="sk-i"><i class='bx bxl-react'></i></div><p>React</p></div>
-      <div class="sk" style="--c:#e44d26"><div class="sk-i"><i class='bx bxl-html5'></i></div><p>HTML5</p></div>
-      <div class="sk" style="--c:#264de4"><div class="sk-i"><i class='bx bxl-css3'></i></div><p>CSS3</p></div>
-      <div class="sk" style="--c:#f0db4f"><div class="sk-i"><i class='bx bxl-javascript'></i></div><p>JavaScript</p></div>
-      <div class="sk" style="--c:#f05032"><div class="sk-i"><i class='bx bxl-git'></i></div><p>Git</p></div>
-    </div>
-  </section>
-
-  <!-- PROJECTS -->
-  <section id="projects">
-    <div class="s-label">// projects</div>
-    <h2 class="s-title">What I've <em>Built</em></h2>
-    <div class="proj-grid">
-
-      <div class="pcard">
-        <div class="pcard-top">
-          <div class="pnum">01</div>
-          <div class="pcard-links">
-            <a href="https://gaurav-o.github.io/OIBSIP/Level1_Task1_LandingPage/" target="_blank"><i class='bx bx-link-external'></i></a>
-            <a href="https://github.com/gaurav-o/OIBSIP/tree/main/Level1_Task1_LandingPage" target="_blank"><i class='bx bxl-github'></i></a>
-          </div>
+    <section id="skills" class="skills-section">
+        <div class="section-header">
+            <h2 class="section-title">Tech Stack</h2>
+            <div class="cosmic-line"></div>
         </div>
-        <h3>Landing Page</h3>
-        <p>A responsive landing page with modern layout and clean design principles.</p>
-        <div class="ptags"><span>HTML</span><span>CSS</span></div>
-      </div>
-
-      <div class="pcard">
-        <div class="pcard-top">
-          <div class="pnum">02</div>
-          <div class="pcard-links">
-            <a href="https://gaurav-o.github.io/OIBSIP/Level1_Task3_TemperatureConverter/" target="_blank"><i class='bx bx-link-external'></i></a>
-            <a href="https://github.com/gaurav-o/OIBSIP/tree/main/Level1_Task3_TemperatureConverter" target="_blank"><i class='bx bxl-github'></i></a>
-          </div>
+        <div class="skills-grid">
+            <div class="skill-card" title="Java"><i class="fab fa-java"></i></div>
+            <div class="skill-card" title="Spring Boot"><i class="fas fa-leaf"></i></div>
+            <div class="skill-card" title="Database Management"><i class="fas fa-database"></i></div>
+            <div class="skill-card" title="HTML5"><i class="fab fa-html5"></i></div>
+            <div class="skill-card" title="CSS3"><i class="fab fa-css3-alt"></i></div>
+            <div class="skill-card" title="JavaScript"><i class="fab fa-js"></i></div>
+            <div class="skill-card" title="Git"><i class="fab fa-git-alt"></i></div>
         </div>
-        <h3>Temperature Converter</h3>
-        <p>Converts between Celsius, Fahrenheit and Kelvin instantly with smooth UI.</p>
-        <div class="ptags"><span>HTML</span><span>CSS</span><span>JS</span></div>
-      </div>
+    </section>
 
-      <div class="pcard">
-        <div class="pcard-top">
-          <div class="pnum">03</div>
-          <div class="pcard-links">
-            <a href="https://gaurav-o.github.io/OIBSIP/Level2_Task1_Calculator/" target="_blank"><i class='bx bx-link-external'></i></a>
-            <a href="https://github.com/gaurav-o/OIBSIP/tree/main/Level2_Task1_Calculator" target="_blank"><i class='bx bxl-github'></i></a>
-          </div>
+    <section id="projects" class="projects-section">
+        <div class="section-header">
+            <h2 class="section-title">Featured Missions</h2>
+            <div class="cosmic-line"></div>
         </div>
-        <h3>Calculator</h3>
-        <p>Fully functional calculator with clean UI and smooth keyboard interactions.</p>
-        <div class="ptags"><span>HTML</span><span>CSS</span><span>JS</span></div>
-      </div>
-
-      <div class="pcard">
-        <div class="pcard-top">
-          <div class="pnum">04</div>
-          <div class="pcard-links">
-            <a href="https://gaurav-o.github.io/OIBSIP/Level2_Task2_TributePage/" target="_blank"><i class='bx bx-link-external'></i></a>
-            <a href="https://github.com/gaurav-o/OIBSIP/tree/main/Level2_Task2_TributePage" target="_blank"><i class='bx bxl-github'></i></a>
-          </div>
+        <div class="projects-container">
+            <div class="project-card">
+                <h3>Pizza Delivery App</h3>
+                <p>Full stack pizza ordering app featuring real-time state management, secure checkout payment gateway integrations, and an administrative dashboard control panel.</p>
+            </div>
+            <div class="project-card">
+                <h3>Login Authentication System</h3>
+                <p>Secure gatekeeping architecture built with strict JavaScript validation, handling registration routing, stateful login handling, and route-guarded profile views.</p>
+            </div>
+            <div class="project-card">
+                <h3>Tribute Page</h3>
+                <p>A beautifully designed, timeline-driven legacy page honoring Dr. APJ Abdul Kalam, utilizing crisp typography and responsive layouts for quotes.</p>
+            </div>
+            <div class="project-card">
+                <h3>Temperature Converter</h3>
+                <p>A highly reactive utility application processing real-time complex mathematical conversions across Celsius, Fahrenheit, and Kelvin scales instantly.</p>
+            </div>
+            <div class="project-card">
+                <h3>Calculator UI</h3>
+                <p>An elegant, high-precision mathematical core engineered within a distraction-free, micro-animated user interface handling arithmetic logic chains.</p>
+            </div>
+            <div class="project-card">
+                <h3>Responsive Landing Page</h3>
+                <p>Fluid user landing page built completely with structured HTML/CSS components, persistent dynamic navbar links, and functional service modules.</p>
+            </div>
         </div>
-        <h3>Tribute Page</h3>
-        <p>Heartfelt tribute to Dr. APJ Abdul Kalam with timeline and iconic quotes.</p>
-        <div class="ptags"><span>HTML</span><span>CSS</span></div>
-      </div>
+    </section>
 
-      <div class="pcard">
-        <div class="pcard-top">
-          <div class="pnum">05</div>
-          <div class="pcard-links">
-            <a href="https://gaurav-o.github.io/OIBSIP/Level2_Task4_LoginAuth/" target="_blank"><i class='bx bx-link-external'></i></a>
-            <a href="https://github.com/gaurav-o/OIBSIP/tree/main/Level2_Task4_LoginAuth" target="_blank"><i class='bx bxl-github'></i></a>
-          </div>
+    <section id="contact" class="contact-section">
+        <div class="section-header">
+            <h2 class="section-title">Establish Contact</h2>
+            <div class="cosmic-line"></div>
         </div>
-        <h3>Login Authentication</h3>
-        <p>Register, login and access a secured page with full JS validation.</p>
-        <div class="ptags"><span>HTML</span><span>CSS</span><span>JS</span></div>
-      </div>
+        <div class="contact-box">
+            <p>Ready to collaborate or launch a new initiative? Reach out through any of the channels below.</p>
+            <div class="contact-links">
+                <a href="mailto:gauravr20041904@gmail.com" class="contact-item">
+                    <i class="fas fa-envelope"></i>
+                    <span>Email</span>
+                </a>
+                <a href="https://www.linkedin.com/in/gaurav-tripathi-48337427a/" target="_blank" class="contact-item">
+                    <i class="fab fa-linkedin-in"></i>
+                    <span>LinkedIn</span>
+                </a>
+                <a href="https://github.com/gaurav-o" target="_blank" class="contact-item">
+                    <i class="fab fa-github"></i>
+                    <span>GitHub</span>
+                </a>
+            </div>
+        </div>
+    </section>
 
-    </div>
-  </section>
+    <footer class="footer">
+        <p>&copy; 2026 Gaurav Tripathi. Crafted with stellar precision.</p>
+    </footer>
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="s-label">// contact</div>
-    <h2 class="s-title">Let's <em>Connect</em></h2>
-    <p class="contact-sub">Have a project in mind or just want to say hi? I respond fast.</p>
-    <div class="contact-grid">
-      <a href="mailto:gauravr20041904@gmail.com" class="clink">
-        <span class="clink-icon"><i class='bx bx-envelope'></i></span>
-        <span class="clink-body"><strong>Email</strong><small>gauravr20041904@gmail.com</small></span>
-        <i class='bx bx-right-arrow-alt clink-arr'></i>
-      </a>
-      <a href="https://www.linkedin.com/in/gaurav-tripathi-48337427a/" target="_blank" class="clink">
-        <span class="clink-icon li"><i class='bx bxl-linkedin'></i></span>
-        <span class="clink-body"><strong>LinkedIn</strong><small>gaurav-tripathi-48337427a</small></span>
-        <i class='bx bx-right-arrow-alt clink-arr'></i>
-      </a>
-      <a href="https://github.com/gaurav-o" target="_blank" class="clink">
-        <span class="clink-icon gh"><i class='bx bxl-github'></i></span>
-        <span class="clink-body"><strong>GitHub</strong><small>github.com/gaurav-o</small></span>
-        <i class='bx bx-right-arrow-alt clink-arr'></i>
-      </a>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <span class="logo">GT<em>.</em></span>
-    <p>Built with 💛 by <strong>Gaurav Tripathi</strong></p>
-    <p class="copy">© 2025 All rights reserved</p>
-  </footer>
-
-  <script src="script.js"></script>
 </body>
 </html>
