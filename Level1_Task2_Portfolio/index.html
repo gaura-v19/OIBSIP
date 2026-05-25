@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gaurav Tripathi | Portfolio</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- LOADER -->
+  <div class="loader" id="loader">
+    <div class="loader-circle"></div>
+    <p>Loading Universe...</p>
+  </div>
+
+  <!-- CURSOR -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursor-follower"></div>
+
+  <!-- STARS BACKGROUND -->
+  <div class="stars" id="stars"></div>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">GT<span>.</span></div>
+    <ul class="nav-links">
+      <li><a href="#home">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section id="home" class="hero">
+    <div class="hero-left">
+      <div class="hero-tag">👋 Welcome to my Universe</div>
+      <h1>I'm <span class="gradient-text">Gaurav</span><br/>Tripathi</h1>
+      <p class="hero-desc">A passionate Software Developer who loves crafting apps and websites that solve real-world problems.</p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn-primary">View My Work</a>
+        <a href="#contact" class="btn-outline">Hire Me</a>
+      </div>
+      <div class="hero-socials">
+        <a href="https://www.linkedin.com/in/gaurav-tripathi-48337427a/" target="_blank"><i class='bx bxl-linkedin'></i></a>
+        <a href="https://github.com/gaurav-o" target="_blank"><i class='bx bxl-github'></i></a>
+        <a href="mailto:gauravr20041904@gmail.com"><i class='bx bx-envelope'></i></a>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-img-wrapper">
+        <div class="hero-img-bg"></div>
+        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=Gaurav&backgroundColor=b6e3f4" alt="Gaurav Avatar" class="hero-avatar"/>
+        <div class="orbit orbit-1"><div class="orbit-dot"></div></div>
+        <div class="orbit orbit-2"><div class="orbit-dot"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT SECTION -->
+  <section id="about" class="about">
+    <div class="section-tag">// about me</div>
+    <h2 class="section-title">Who Am <span class="gradient-text">I?</span></h2>
+    <div class="about-grid">
+      <div class="about-img-box">
+        <img src="https://api.dicebear.com/7.x/adventurer/svg?seed=GauravCoding&backgroundColor=c0aede" alt="Coding Avatar"/>
+        <div class="about-img-decoration"></div>
+      </div>
+      <div class="about-content">
+        <p>Hey! I'm <strong>Gaurav Tripathi</strong>, a Software Developer from <strong>Madhav Institute of Technology and Science</strong>. I am passionate about building applications and websites that make a real difference in people's lives.</p>
+        <br/>
+        <p>I enjoy turning complex problems into simple, elegant solutions. When I'm not coding, I'm probably exploring new technologies or leveling up my skills.</p>
+        <br/>
+        <div class="about-cards">
+          <div class="about-card">
+            <i class='bx bx-code-alt'></i>
+            <h4>Clean Code</h4>
+            <p>Writing readable, maintainable code</p>
+          </div>
+          <div class="about-card">
+            <i class='bx bx-bulb'></i>
+            <h4>Problem Solver</h4>
+            <p>Turning ideas into real solutions</p>
+          </div>
+          <div class="about-card">
+            <i class='bx bx-rocket'></i>
+            <h4>Fast Learner</h4>
+            <p>Always exploring new tech</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS SECTION -->
+  <section id="skills" class="skills">
+    <div class="section-tag">// my skills</div>
+    <h2 class="section-title">What I <span class="gradient-text">Know</span></h2>
+    <div class="skills-grid">
+
+      <div class="skill-card">
+        <div class="skill-icon" style="background: #e44d26;">
+          <i class='bx bxl-html5'></i>
+        </div>
+        <h3>HTML5</h3>
+        <div class="skill-bar"><div class="skill-fill" style="width:90%"></div></div>
+        <span>90%</span>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon" style="background: #264de4;">
+          <i class='bx bxl-css3'></i>
+        </div>
+        <h3>CSS3</h3>
+        <div class="skill-bar"><div class="skill-fill" style="width:85%"></div></div>
+        <span>85%</span>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon" style="background: #f0db4f; color:#000;">
+          <i class='bx bxl-javascript'></i>
+        </div>
+        <h3>JavaScript</h3>
+        <div class="skill-bar"><div class="skill-fill" style="width:75%"></div></div>
+        <span>75%</span>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon" style="background: #3776ab;">
+          <i class='bx bxl-python'></i>
+        </div>
+        <h3>Python</h3>
+        <div class="skill-bar"><div class="skill-fill" style="width:70%"></div></div>
+        <span>70%</span>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon" style="background: #f05032;">
+          <i class='bx bxl-git'></i>
+        </div>
+        <h3>Git & GitHub</h3>
+        <div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div>
+        <span>80%</span>
+      </div>
+
+      <div class="skill-card">
+        <div class="skill-icon" style="background: #8b5cf6;">
+          <i class='bx bx-code-curly'></i>
+        </div>
+        <h3>Software Dev</h3>
+        <div class="skill-bar"><div class="skill-fill" style="width:80%"></div></div>
+        <span>80%</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- PROJECTS SECTION -->
+  <section id="projects" class="projects">
+    <div class="section-tag">// my projects</div>
+    <h2 class="section-title">What I've <span class="gradient-text">Built</span></h2>
+    <div class="projects-grid">
+
+      <div class="project-card">
+        <div class="project-img">
+          <img src="https://api.dicebear.com/7.x/shapes/svg?seed=landing&backgroundColor=8b5cf6" alt="Landing Page"/>
+          <div class="project-overlay">
+            <a href="https://gaurav-o.github.io/OIBSIP/Level1_Task1_LandingPage/" target="_blank" class="btn-primary">Live Demo</a>
+          </div>
+        </div>
+        <div class="project-info">
+          <h3>Landing Page</h3>
+          <p>A fully responsive landing page with smooth animations and modern design.</p>
+          <div class="project-tags">
+            <span>HTML</span><span>CSS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-img">
+          <img src="https://api.dicebear.com/7.x/shapes/svg?seed=temp&backgroundColor=6d28d9" alt="Temperature Converter"/>
+          <div class="project-overlay">
+            <a href="#" target="_blank" class="btn-primary">Live Demo</a>
+          </div>
+        </div>
+        <div class="project-info">
+          <h3>Temperature Converter</h3>
+          <p>Convert between Celsius, Fahrenheit and Kelvin instantly.</p>
+          <div class="project-tags">
+            <span>HTML</span><span>CSS</span><span>JS</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-img">
+          <img src="https://api.dicebear.com/7.x/shapes/svg?seed=calc&backgroundColor=4c1d95" alt="Calculator"/>
+          <div class="project-overlay">
+            <a href="#" target="_blank" class="btn-primary">Live Demo</a>
+          </div>
+        </div>
+        <div class="project-info">
+          <h3>Calculator</h3>
+          <p>A fully functional calculator with clean UI and smooth interactions.</p>
+          <div class="project-tags">
+            <span>HTML</span><span>CSS</span><span>JS</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION -->
+  <section id="contact" class="contact">
+    <div class="section-tag">// contact me</div>
+    <h2 class="section-title">Let's <span class="gradient-text">Connect</span></h2>
+    <div class="contact-grid">
+      <div class="contact-left">
+        <p>Have a project in mind or just want to say hi? My inbox is always open!</p>
+        <div class="contact-links">
+          <a href="mailto:gauravr20041904@gmail.com">
+            <i class='bx bx-envelope'></i>
+            gauravr20041904@gmail.com
+          </a>
+          <a href="https://www.linkedin.com/in/gaurav-tripathi-48337427a/" target="_blank">
+            <i class='bx bxl-linkedin'></i>
+            linkedin.com/in/gaurav-tripathi
+          </a>
+          <a href="https://github.com/gaurav-o" target="_blank">
+            <i class='bx bxl-github'></i>
+            github.com/gaurav-o
+          </a>
+        </div>
+      </div>
+      <form class="contact-form" onsubmit="sendMessage(event)">
+        <input type="text" placeholder="Your Name" required/>
+        <input type="email" placeholder="Your Email" required/>
+        <textarea placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit" class="btn-primary">Send Message <i class='bx bx-send'></i></button>
+        <p class="form-msg" id="formMsg"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>Designed & Built by <span class="gradient-text">Gaurav Tripathi</span> ✨</p>
+    <p class="footer-sub">© 2025 All Rights Reserved</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
