@@ -1,0 +1,465 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Space Temperature Converter</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg: #080810;
+      --card: rgba(255,255,255,0.04);
+      --border: rgba(255,255,255,0.08);
+      --gold: #f5c518;
+      --text: #f7f7f7;
+      --muted: #9ca3af;
+      --blue: #3b82f6;
+      --orange: #ff6b35;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at top, rgba(245,197,24,0.08), transparent 25%),
+        radial-gradient(circle at bottom, rgba(59,130,246,0.08), transparent 20%),
+        var(--bg);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Space Grotesk', sans-serif;
+      color: var(--text);
+      padding: 20px;
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      border-radius: 50%;
+      opacity: 0.4;
+      animation: twinkle 4s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%,100% { opacity: 0.15; }
+      50% { opacity: 0.8; }
+    }
+
+    .container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 480px;
+      padding: 32px;
+      border-radius: 28px;
+      background: var(--card);
+      backdrop-filter: blur(18px);
+      border: 1px solid var(--border);
+      box-shadow:
+        0 0 40px rgba(0,0,0,0.45),
+        inset 0 0 0 1px rgba(255,255,255,0.02);
+      text-align: center;
+    }
+
+    .tag {
+      color: var(--gold);
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .orb-wrapper {
+      display: flex;
+      justify-content: center;
+      margin: 38px 0 30px;
+      position: relative;
+    }
+
+    .orb {
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff8d6, #f5c518);
+      position: relative;
+      transition:
+        background 0.7s ease,
+        box-shadow 0.7s ease,
+        transform 0.3s ease;
+      animation: float 5s ease-in-out infinite;
+      box-shadow:
+        0 0 40px rgba(245,197,24,0.45),
+        0 0 100px rgba(245,197,24,0.25);
+    }
+
+    .orb::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, rgba(255,255,255,0.85), transparent 45%);
+      opacity: 0.8;
+    }
+
+    @keyframes float {
+      0%,100% {
+        transform: translateY(0px);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .input-group {
+      margin-top: 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 16px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.04);
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: 0.3s ease;
+      font-family: inherit;
+    }
+
+    input:focus {
+      border-color: rgba(245,197,24,0.5);
+      box-shadow: 0 0 20px rgba(245,197,24,0.12);
+    }
+
+    input::placeholder {
+      color: #777;
+    }
+
+    .units {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .unit-btn {
+      padding: 12px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.03);
+      color: white;
+      cursor: pointer;
+      transition: 0.3s ease;
+      font-family: inherit;
+      font-weight: 500;
+    }
+
+    .unit-btn:hover {
+      transform: translateY(-2px);
+      border-color: rgba(245,197,24,0.25);
+    }
+
+    .unit-btn.active {
+      background: var(--gold);
+      color: #111;
+      border-color: var(--gold);
+      box-shadow: 0 0 18px rgba(245,197,24,0.3);
+    }
+
+    .results {
+      margin-top: 28px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .result-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 16px;
+      border-radius: 18px;
+      transition: 0.3s ease;
+    }
+
+    .result-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(245,197,24,0.15);
+    }
+
+    .label {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 6px;
+    }
+
+    .value {
+      font-size: 1.35rem;
+      font-weight: 600;
+      color: white;
+    }
+
+    .error {
+      color: #ff7272;
+      margin-top: 14px;
+      font-size: 0.9rem;
+      min-height: 20px;
+    }
+
+    .footer {
+      margin-top: 24px;
+      color: rgba(255,255,255,0.35);
+      font-size: 0.8rem;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 520px) {
+      .container {
+        padding: 24px;
+      }
+
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      .orb {
+        width: 145px;
+        height: 145px;
+      }
+
+      .value {
+        font-size: 1.15rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="stars" id="stars"></div>
+
+  <div class="container">
+
+    <div class="tag">Temperature Converter</div>
+
+    <h1>Space Thermometer</h1>
+
+    <div class="subtitle">
+      Internship Project • Gaurav Tripathi
+    </div>
+
+    <div class="orb-wrapper">
+      <div class="orb" id="orb"></div>
+    </div>
+
+    <div class="input-group">
+      <input
+        type="text"
+        id="tempInput"
+        placeholder="Enter temperature value"
+        autocomplete="off"
+      />
+    </div>
+
+    <div class="units">
+      <button class="unit-btn active" data-unit="C">Celsius</button>
+      <button class="unit-btn" data-unit="F">Fahrenheit</button>
+      <button class="unit-btn" data-unit="K">Kelvin</button>
+    </div>
+
+    <div class="error" id="error"></div>
+
+    <div class="results">
+      <div class="result-card">
+        <div class="label">Celsius</div>
+        <div class="value" id="celsius">--</div>
+      </div>
+
+      <div class="result-card">
+        <div class="label">Fahrenheit</div>
+        <div class="value" id="fahrenheit">--</div>
+      </div>
+
+      <div class="result-card">
+        <div class="label">Kelvin</div>
+        <div class="value" id="kelvin">--</div>
+      </div>
+    </div>
+
+    <div class="footer">
+      Minimal • Responsive • Smooth UI
+    </div>
+
+  </div>
+
+  <script>
+    const input = document.getElementById("tempInput");
+    const buttons = document.querySelectorAll(".unit-btn");
+
+    const celsiusEl = document.getElementById("celsius");
+    const fahrenheitEl = document.getElementById("fahrenheit");
+    const kelvinEl = document.getElementById("kelvin");
+
+    const errorEl = document.getElementById("error");
+    const orb = document.getElementById("orb");
+
+    let selectedUnit = "C";
+
+    buttons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        buttons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedUnit = btn.dataset.unit;
+        convertTemperature();
+      });
+    });
+
+    input.addEventListener("input", () => {
+      requestAnimationFrame(convertTemperature);
+    });
+
+    function convertTemperature() {
+      const value = input.value.trim();
+
+      if (value === "") {
+        clearValues();
+        errorEl.textContent = "";
+        updateOrb(20);
+        return;
+      }
+
+      if (!/^[-+]?\d*\.?\d+$/.test(value)) {
+        errorEl.textContent = "Please enter numbers only.";
+        clearValues();
+        return;
+      }
+
+      errorEl.textContent = "";
+
+      const temp = parseFloat(value);
+
+      let c, f, k;
+
+      if (selectedUnit === "C") {
+        c = temp;
+        f = (temp * 9/5) + 32;
+        k = temp + 273.15;
+      }
+
+      else if (selectedUnit === "F") {
+        c = (temp - 32) * 5/9;
+        f = temp;
+        k = c + 273.15;
+      }
+
+      else {
+        c = temp - 273.15;
+        f = (c * 9/5) + 32;
+        k = temp;
+      }
+
+      celsiusEl.textContent = `${c.toFixed(2)} °C`;
+      fahrenheitEl.textContent = `${f.toFixed(2)} °F`;
+      kelvinEl.textContent = `${k.toFixed(2)} K`;
+
+      updateOrb(c);
+    }
+
+    function clearValues() {
+      celsiusEl.textContent = "--";
+      fahrenheitEl.textContent = "--";
+      kelvinEl.textContent = "--";
+    }
+
+    function updateOrb(celsius) {
+
+      let gradient = "";
+      let glow = "";
+
+      if (celsius < 0) {
+        gradient = "radial-gradient(circle at 30% 30%, #dbeafe, #2563eb)";
+        glow = `
+          0 0 40px rgba(59,130,246,0.55),
+          0 0 100px rgba(59,130,246,0.35)
+        `;
+      }
+
+      else if (celsius <= 30) {
+        gradient = "radial-gradient(circle at 30% 30%, #fff7cc, #f5c518)";
+        glow = `
+          0 0 40px rgba(245,197,24,0.5),
+          0 0 100px rgba(245,197,24,0.25)
+        `;
+      }
+
+      else {
+        gradient = "radial-gradient(circle at 30% 30%, #ffd2a8, #ff5a1f)";
+        glow = `
+          0 0 40px rgba(255,90,31,0.55),
+          0 0 100px rgba(255,90,31,0.3)
+        `;
+      }
+
+      orb.style.background = gradient;
+      orb.style.boxShadow = glow;
+    }
+
+    updateOrb(20);
+
+    // Generate stars
+    const starsContainer = document.getElementById("stars");
+
+    for (let i = 0; i < 90; i++) {
+      const star = document.createElement("div");
+      star.classList.add("star");
+
+      star.style.left = Math.random() * 100 + "%";
+      star.style.top = Math.random() * 100 + "%";
+
+      const size = Math.random() * 2 + 1;
+
+      star.style.width = size + "px";
+      star.style.height = size + "px";
+
+      star.style.animationDelay = Math.random() * 5 + "s";
+
+      starsContainer.appendChild(star);
+    }
+  </script>
+
+</body>
+</html>
+```
+
