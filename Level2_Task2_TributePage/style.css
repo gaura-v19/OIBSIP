@@ -1,0 +1,547 @@
+/* =========================================================
+   LINUS TORVALDS — LEGACY LOG
+   style.css — All styles + animations
+   ========================================================= */
+
+/* ── Reset & Base ── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg:        #080810;
+  --bg-card:   #0d0d1a;
+  --gold:      #f5c518;
+  --gold-dim:  #a8860f;
+  --green:     #22c55e;
+  --white:     #e8e8f0;
+  --muted:     #5a5a7a;
+  --font:      'Space Grotesk', sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--white);
+  font-family: var(--font);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* =========================================================
+   HERO
+   ========================================================= */
+#hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  padding: 2rem;
+}
+
+/* Grid overlay */
+.hero-bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(245, 197, 24, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(245, 197, 24, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+  z-index: 0;
+}
+
+/* Scanline */
+.scanline {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.15) 3px,
+    rgba(0, 0, 0, 0.15) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-inner {
+  position: relative;
+  z-index: 2;
+  animation: heroFadeIn 1.4s ease both;
+}
+
+@keyframes heroFadeIn {
+  from { opacity: 0; transform: translateY(32px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.hero-tag {
+  font-size: 0.9rem;
+  color: var(--green);
+  letter-spacing: 0.15em;
+  font-weight: 500;
+  margin-bottom: 1.2rem;
+  font-family: 'Courier New', monospace;
+}
+
+.close-tag {
+  margin-top: 1.2rem;
+  margin-bottom: 0;
+}
+
+.hero-name {
+  font-size: clamp(3.5rem, 10vw, 9rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--white);
+  text-transform: uppercase;
+}
+
+.hero-name::first-line {
+  color: var(--gold);
+}
+
+/* Make "Linus" gold via a span trick — we use CSS only approach */
+.hero-name {
+  background: linear-gradient(
+    to bottom,
+    var(--gold) 0%,
+    var(--gold) 50%,
+    var(--white) 50%,
+    var(--white) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  margin-top: 1.8rem;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  color: var(--muted);
+  letter-spacing: 0.05em;
+  font-weight: 400;
+}
+
+.hero-years {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.2em;
+  font-weight: 500;
+}
+
+/* Glowing separator */
+.hero-glow-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    var(--gold) 30%,
+    var(--gold) 70%,
+    transparent 100%
+  );
+  box-shadow: 0 0 24px 4px rgba(245, 197, 24, 0.45);
+  z-index: 3;
+}
+
+/* Scroll hint */
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  animation: bounce 2.4s ease-in-out infinite;
+  z-index: 4;
+}
+
+.scroll-arrow {
+  font-size: 0.8rem;
+  color: var(--gold);
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50%       { transform: translateX(-50%) translateY(6px); }
+}
+
+/* =========================================================
+   SECTION COMMON
+   ========================================================= */
+section {
+  padding: 6rem 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+#quotes {
+  max-width: 1100px;
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+
+.section-tag {
+  display: inline-block;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  color: var(--green);
+  letter-spacing: 0.18em;
+  margin-bottom: 0.6rem;
+}
+
+.section-title {
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: -0.02em;
+  position: relative;
+  display: inline-block;
+}
+
+.section-title::after {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 3px;
+  background: var(--gold);
+  margin: 0.5rem auto 0;
+  border-radius: 2px;
+}
+
+/* =========================================================
+   TIMELINE
+   ========================================================= */
+#timeline {
+  max-width: 900px;
+}
+
+.timeline-track {
+  position: relative;
+  padding: 1rem 0;
+}
+
+/* The vertical gold line */
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    var(--gold) 8%,
+    var(--gold) 92%,
+    transparent
+  );
+  transform: translateX(-50%);
+  box-shadow: 0 0 12px 1px rgba(245, 197, 24, 0.25);
+}
+
+/* Entry wrapper */
+.timeline-entry {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 3.5rem;
+  position: relative;
+  width: 50%;
+}
+
+.timeline-entry.left {
+  left: 0;
+  padding-right: 3.5rem;
+  justify-content: flex-end;
+}
+
+.timeline-entry.right {
+  left: 50%;
+  padding-left: 3.5rem;
+  justify-content: flex-start;
+}
+
+/* Glowing dot */
+.timeline-dot {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 2px solid var(--bg);
+  box-shadow: 0 0 10px 3px rgba(245, 197, 24, 0.6);
+  top: 1.1rem;
+  z-index: 1;
+}
+
+.timeline-entry.left .timeline-dot {
+  right: -7px;
+}
+
+.timeline-entry.right .timeline-dot {
+  left: -7px;
+}
+
+/* Card */
+.timeline-card {
+  background: var(--bg-card);
+  border-left: 3px solid var(--gold);
+  padding: 1.2rem 1.4rem;
+  border-radius: 2px;
+  max-width: 360px;
+  width: 100%;
+  position: relative;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.timeline-entry.right .timeline-card {
+  border-left: none;
+  border-right: 3px solid var(--gold);
+}
+
+.timeline-card:hover {
+  box-shadow: 0 0 24px rgba(245, 197, 24, 0.12);
+  transform: translateY(-2px);
+}
+
+.t-year {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-bottom: 0.4rem;
+}
+
+.t-event {
+  font-size: 0.9rem;
+  color: #9898b8;
+  line-height: 1.55;
+}
+
+.accent-tag {
+  color: var(--green);
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+}
+
+/* ── Timeline scroll reveal ── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateX(0);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.timeline-entry.left[data-reveal] {
+  transform: translateX(-50px);
+}
+
+.timeline-entry.right[data-reveal] {
+  transform: translateX(50px);
+}
+
+[data-reveal].revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* =========================================================
+   QUOTES
+   ========================================================= */
+#quotes {
+  padding: 5rem 2rem 6rem;
+}
+
+.quotes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 0;
+}
+
+.quote-card {
+  background: var(--bg-card);
+  border: 1px solid rgba(245, 197, 24, 0.15);
+  border-radius: 4px;
+  padding: 2rem 1.8rem;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.4s ease, transform 0.4s ease;
+}
+
+.quote-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 4px;
+  box-shadow: 0 0 0 0 rgba(245, 197, 24, 0);
+  transition: box-shadow 0.4s ease;
+}
+
+.quote-card:hover::before {
+  box-shadow: 0 0 30px 2px rgba(245, 197, 24, 0.1) inset;
+}
+
+.quote-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(245, 197, 24, 0.08);
+}
+
+.quote-mark {
+  display: block;
+  font-size: 4rem;
+  color: var(--gold);
+  line-height: 0.8;
+  margin-bottom: 1rem;
+  font-family: Georgia, serif;
+  opacity: 0.8;
+}
+
+.quote-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--white);
+  line-height: 1.65;
+  margin-bottom: 1.2rem;
+}
+
+.quote-attr {
+  font-size: 0.78rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.08em;
+  font-style: italic;
+}
+
+/* ── Quote fade reveal ── */
+[data-reveal-fade] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+[data-reveal-fade].revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+#footer {
+  background: #050508;
+  border-top: 1px solid rgba(245, 197, 24, 0.12);
+  padding: 3.5rem 2rem;
+  text-align: center;
+}
+
+.footer-inner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.footer-name {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gold);
+  letter-spacing: -0.01em;
+  margin-bottom: 0.4rem;
+}
+
+.footer-tagline {
+  font-size: 0.95rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 1.8rem;
+}
+
+.footer-divider {
+  width: 60px;
+  height: 1px;
+  background: var(--gold);
+  margin: 0 auto 1.8rem;
+  opacity: 0.5;
+}
+
+.footer-meta {
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.06em;
+  line-height: 2;
+}
+
+.green  { color: var(--green); }
+.gold   { color: var(--gold); }
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+@media (max-width: 700px) {
+  /* Collapse timeline to single column */
+  .timeline-line {
+    left: 18px;
+  }
+
+  .timeline-entry {
+    width: 100%;
+    padding-left: 3rem !important;
+    padding-right: 0 !important;
+    left: 0 !important;
+    justify-content: flex-start !important;
+  }
+
+  .timeline-dot {
+    left: 12px !important;
+    right: auto !important;
+  }
+
+  .timeline-card {
+    border-left: 3px solid var(--gold) !important;
+    border-right: none !important;
+    max-width: 100%;
+  }
+
+  .timeline-entry.left[data-reveal],
+  .timeline-entry.right[data-reveal] {
+    transform: translateX(20px);
+  }
+
+  .quotes-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-name {
+    font-size: clamp(3rem, 18vw, 5rem);
+  }
+
+  section {
+    padding: 4rem 1.2rem;
+  }
+}
