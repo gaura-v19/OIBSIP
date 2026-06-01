@@ -1,98 +1,78 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Tasko — Get Things Done</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+  <title>Tasko</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"/>
   <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
 
-  <!-- Floating particles background -->
-  <div class="particles" id="particles"></div>
-
-  <div class="container">
-
-    <!-- Header -->
-    <div class="app-header">
-      <div class="logo">
-        <div class="logo-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-        </div>
-        <span>Tasko</span>
-      </div>
-      <div class="header-stats">
-        <div class="stat-pill" id="stat-pill">0 tasks today</div>
-      </div>
-    </div>
-
-    <!-- Main card -->
-    <div class="card">
-
-      <!-- Progress section -->
-      <div class="progress-section">
-        <div class="progress-label">
-          <span id="progress-text">Let's get started!</span>
-          <span id="progress-percent">0%</span>
-        </div>
-        <div class="progress-bar-wrap">
-          <div class="progress-bar-fill" id="progress-fill"></div>
-        </div>
-      </div>
-
-      <!-- Input area -->
-      <div class="input-area">
-        <div class="input-row">
-          <div class="input-wrap">
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-            <input type="text" id="input-box" placeholder="What needs to be done?" autocomplete="off"/>
-          </div>
-          <button class="add-btn" onclick="addTask()" id="add-btn">
-            <span>Add</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-          </button>
-        </div>
-
-        <!-- Meta row: priority + due date -->
-        <div class="meta-row">
-          <div class="priority-group">
-            <span class="meta-label">Priority</span>
-            <div class="priority-pills">
-              <button class="priority-pill p-high" data-p="high">🔴 High</button>
-              <button class="priority-pill p-med active-priority" data-p="medium">🟡 Medium</button>
-              <button class="priority-pill p-low" data-p="low">🟢 Low</button>
-            </div>
-          </div>
-          <div class="date-group">
-            <span class="meta-label">Due</span>
-            <input type="date" id="due-date" class="date-input"/>
-          </div>
-        </div>
-      </div>
-
-      <!-- Filter tabs -->
-      <div class="filter-tabs">
-        <button class="tab active-tab" data-filter="all">All</button>
-        <button class="tab" data-filter="active">Active</button>
-        <button class="tab" data-filter="completed">Done</button>
-        <button class="tab tab-clear" id="clear-done-btn">Clear Done</button>
-      </div>
-
-      <!-- Task list -->
-      <ul id="list-cont"></ul>
-
-      <!-- Empty state -->
-      <div class="empty-state" id="empty-state">
-        <div class="empty-icon">
-          <svg viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" stroke="rgba(255,255,255,0.1)" stroke-width="2"/><path d="M20 32 l8 8 l16-16" stroke="rgba(255,255,255,0.3)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <p>No tasks here yet</p>
-        <span>Add something above to get started</span>
-      </div>
-
-    </div>
+  <div class="bg-blobs">
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
   </div>
+
+  <main>
+
+    <header>
+      <div class="brand">
+        <div class="brand-icon">✓</div>
+        <h1>Tasko</h1>
+      </div>
+      <div class="counter-wrap">
+        <span id="counter">0 tasks</span>
+      </div>
+    </header>
+
+    <section class="progress-wrap">
+      <div class="progress-info">
+        <span id="progress-label">Ready when you are</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="track">
+        <div class="fill" id="fill"></div>
+      </div>
+    </section>
+
+    <section class="input-section">
+      <div class="input-group">
+        <input type="text" id="input-box" placeholder="What's on your mind?" autocomplete="off" spellcheck="false"/>
+        <button id="add-btn" onclick="addTask()">Add it</button>
+      </div>
+      <div class="options-row">
+        <div class="priority-row">
+          <button class="p-btn" data-p="high">🔴 High</button>
+          <button class="p-btn selected" data-p="medium">🟡 Med</button>
+          <button class="p-btn" data-p="low">🟢 Low</button>
+        </div>
+        <input type="date" id="due-date" title="Due date"/>
+      </div>
+    </section>
+
+    <div class="tabs">
+      <button class="tab on" data-f="all">All</button>
+      <button class="tab" data-f="active">Active</button>
+      <button class="tab" data-f="done">Done</button>
+      <button class="tab danger" id="clear-btn">Clear done</button>
+    </div>
+
+    <ul id="list"></ul>
+
+    <div class="empty" id="empty">
+      <div class="empty-graphic">
+        <div class="e-circle c1"></div>
+        <div class="e-circle c2"></div>
+        <div class="e-circle c3"></div>
+        <span class="e-tick">✓</span>
+      </div>
+      <p>Nothing here yet</p>
+      <span>Add your first task above</span>
+    </div>
+
+  </main>
 
   <script src="script.js"></script>
 </body>
