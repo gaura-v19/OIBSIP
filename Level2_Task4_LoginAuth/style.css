@@ -127,7 +127,7 @@ body {
   display: flex; justify-content: center;
   padding: 30px 0 12px;
   background: linear-gradient(180deg, #f8f4ff 0%, transparent 100%);
-  perspective: 700px;
+  
 }
 
 .mascot {
@@ -136,7 +136,7 @@ body {
   width: 130px;
   animation: breathe 3.8s ease-in-out infinite;
   will-change: transform;
-  transform-style: preserve-3d;
+  
 }
 
 @keyframes breathe {
@@ -147,106 +147,104 @@ body {
 /* ── EARS ──────────────────────────────────────── */
 .ears {
   position: absolute;
-  top: -16px; left: 0; right: 0;
+  top: -14px; left: 0; right: 0;
   display: flex; justify-content: space-between;
-  padding: 0 8px;
+  padding: 0 6px;
   z-index: 1;
 }
 
 .ear {
-  width: 30px; height: 30px;
+  width: 32px; height: 32px;
   background: var(--p-black);
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.25);
+  box-shadow: 0 3px 8px rgba(0,0,0,0.3);
 }
 
 .ear-inner {
-  width: 14px; height: 14px;
-  background: var(--p-black);
+  width: 15px; height: 15px;
+  background: #2a2a2a;
   border-radius: 50%;
-  border: 2px solid rgba(255,255,255,0.08);
 }
 
 /* ── HEAD ──────────────────────────────────────── */
 .head {
-  width: 102px; height: 94px;
-  background: radial-gradient(ellipse at 40% 35%, #ffffff, var(--p-white) 70%, #e8e5e0);
-  border-radius: 50% 50% 46% 46% / 52% 52% 48% 48%;
+  width: 100px; height: 96px;
+  background: radial-gradient(ellipse at 42% 38%, #ffffff 0%, #f0ede8 60%, #dedad4 100%);
+  border-radius: 50%;
   position: relative;
   z-index: 2;
   box-shadow:
-    0 8px 24px rgba(0,0,0,0.15),
-    inset 0 -3px 8px rgba(0,0,0,0.06),
-    inset 0 3px 6px rgba(255,255,255,0.8);
-  transition: transform 0.07s linear;
-  will-change: transform;
-  transform-origin: center bottom;
+    0 6px 24px rgba(0,0,0,0.13),
+    inset 0 -4px 10px rgba(0,0,0,0.06),
+    inset 0 4px 8px rgba(255,255,255,0.7);
+  /* NO transition or will-change for 3d transform */
 }
 
 /* ── EYE PATCHES (panda marking) ──────────────── */
 .eye-patches {
   position: absolute;
-  top: 20px; left: 0; right: 0;
+  top: 24px; left: 0; right: 0;
   display: flex; justify-content: space-around;
-  padding: 0 8px;
+  padding: 0 10px;
   z-index: 2;
 }
 
 .eye-patch {
-  width: 32px; height: 28px;
+  width: 30px; height: 26px;
   background: var(--p-black);
-  border-radius: 50% 50% 48% 52% / 55% 55% 45% 45%;
+  border-radius: 45% 55% 50% 50% / 50% 50% 50% 50%;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 /* ── EYEBROWS ──────────────────────────────────── */
 .eyebrows {
   position: absolute;
-  top: 10px; left: 0; right: 0;
+  top: 12px; left: 0; right: 0;
   display: flex; justify-content: space-around;
-  padding: 0 12px;
+  padding: 0 14px;
   z-index: 4;
 }
 
 .eyebrow {
-  width: 20px; height: 3.5px;
-  background: #2a2030;
+  width: 18px; height: 3px;
+  background: #1a1a1a;
   border-radius: 4px;
   transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
   transform-origin: center;
-}
-.eyebrow-left  { transform: rotate(6deg); }
-.eyebrow-right { transform: rotate(-6deg); }
 
-.mascot.typing .eyebrow-left  { transform: translateY(-4px) rotate(3deg); }
-.mascot.typing .eyebrow-right { transform: translateY(-4px) rotate(-3deg); }
-.mascot.error  .eyebrow-left  { transform: translateY(3px) rotate(-10deg); }
-.mascot.error  .eyebrow-right { transform: translateY(3px) rotate(10deg); }
+}
+.eyebrow-left  { transform: rotate(7deg); }
+.eyebrow-right { transform: rotate(-7deg); }
+
+.mascot.typing  .eyebrow-left  { transform: translateY(-4px) rotate(3deg); }
+.mascot.typing  .eyebrow-right { transform: translateY(-4px) rotate(-3deg); }
+.mascot.error   .eyebrow-left  { transform: translateY(3px) rotate(-12deg); }
+.mascot.error   .eyebrow-right { transform: translateY(3px) rotate(12deg); }
 .mascot.success .eyebrow-left  { transform: translateY(-5px) rotate(2deg); }
 .mascot.success .eyebrow-right { transform: translateY(-5px) rotate(-2deg); }
 
 /* ── EYES ──────────────────────────────────────── */
 .eyes {
   position: absolute;
-  top: 26px; left: 0; right: 0;
+  top: 30px; left: 0; right: 0;
   display: flex; justify-content: space-around;
-  padding: 0 13px;
+  padding: 0 14px;
   z-index: 3;
 }
 
 .eye {
-  width: 22px; height: 22px;
+  width: 20px; height: 20px;
   background: #ffffff;
   border-radius: 50%;
   position: relative; overflow: hidden;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.25), inset 0 1px 2px rgba(0,0,0,0.08);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
   transition: transform 0.3s ease;
 }
 
 .mascot.success .eye {
   border-radius: 50% 50% 50% 50% / 70% 70% 30% 30%;
-  transform: scaleY(0.6);
+  transform: scaleY(0.55);
 }
 
 .eye-inner {
@@ -255,7 +253,7 @@ body {
 }
 
 .pupil {
-  width: 12px; height: 12px;
+  width: 11px; height: 11px;
   background: radial-gradient(circle at 35% 30%, #3a2060, #0d0820);
   border-radius: 50%;
   position: relative;
@@ -266,7 +264,7 @@ body {
   position: absolute;
   top: 2px; left: 2px;
   width: 4px; height: 4px;
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.95);
   border-radius: 50%;
 }
 
@@ -285,12 +283,12 @@ body {
 /* ── SNOUT ──────────────────────────────────────── */
 .snout {
   position: absolute;
-  bottom: 10px; left: 50%;
+  bottom: 12px; left: 50%;
   transform: translateX(-50%);
-  width: 44px; height: 26px;
-  background: radial-gradient(ellipse at 50% 40%, #ffffff, var(--p-pink) 80%);
-  border-radius: 50% 50% 46% 46% / 55% 55% 45% 45%;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 42px; height: 24px;
+  background: radial-gradient(ellipse at 50% 40%, #ffffff, #f9c4d0 80%);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
   z-index: 3;

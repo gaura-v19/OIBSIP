@@ -50,9 +50,9 @@ document.addEventListener('touchmove', e => {
 
 function trackCursor() {
   if (currentState === 'covering') {
-    tPX=0; tPY=0; tHRX=0; tHRY=0;
+    tPX = 0; tPY = 0;
   } else if (currentState === 'typing') {
-    tPX=0; tPY=5; tHRX=7; tHRY=0;
+    tPX = 0; tPY = 4.5;
   } else {
     const r  = mascot.getBoundingClientRect();
     const cx = r.left + r.width  / 2;
@@ -61,28 +61,19 @@ function trackCursor() {
     const dy = mouseY - cy;
     const dist = Math.hypot(dx, dy) || 1;
 
-    /* Head tilt (subtle) */
-    const HR = 7;
-    tHRY =  (dx / (window.innerWidth  / 2)) * HR;
-    tHRX = -(dy / (window.innerHeight / 2)) * (HR * 0.45);
-
-    /* Pupil (clamped) */
-    const MP  = 5.2;
+    const MP  = 4.5;
     const str = Math.min(dist / 200, 1);
     const ang = Math.atan2(dy, dx);
     tPX = Math.cos(ang) * str * MP;
     tPY = Math.sin(ang) * str * MP;
   }
 
-  /* Lerp — slightly faster feel */
-  const L = 0.11, LP = 0.16;
-  cHRX += (tHRX - cHRX) * L;
-  cHRY += (tHRY - cHRY) * L;
-  cPX  += (tPX  - cPX)  * LP;
-  cPY  += (tPY  - cPY)  * LP;
+  const LP = 0.14;
+  cPX += (tPX - cPX) * LP;
+  cPY += (tPY - cPY) * LP;
 
-  head.style.transform =
-    `rotateX(${cHRX}deg) rotateY(${cHRY}deg)`;
+  /* No head rotation — 2D only */
+  head.style.transform = 'none';
   pupilL.style.transform = `translate(${cPX}px, ${cPY}px)`;
   pupilR.style.transform = `translate(${cPX}px, ${cPY}px)`;
 

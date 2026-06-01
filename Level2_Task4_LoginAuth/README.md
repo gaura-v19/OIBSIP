@@ -26,15 +26,11 @@ Beyond the mascot, it's a fully working auth flow:
 
 ## Mascot states
 
-| What you do                 | What the panda does |
-|---|---|
-| Move your mouse             | Head and pupils track the cursor |
-| Focus any text field        | Eyes look downward, brows raise |
-| Focus the password field    | Covers eyes with both hands |
-| Failed validation or wrong
-  password         | Shakes head, sad face |
-| Successful login or register | Jumps, big smile, rosy cheeks |
-| Every 2–4 seconds (idle) | Blinks naturally |
+Move your mouse around and the panda's head and pupils follow it in real time.
+Focus any text field and it looks down with a focused expression. Hit the
+password field and it covers its eyes with both hands. Submit something wrong
+and it shakes its head with a sad face. Get it right and it jumps with a big
+smile and rosy cheeks. Leave it alone for a few seconds and it blinks on its own.
 
 ---
 
