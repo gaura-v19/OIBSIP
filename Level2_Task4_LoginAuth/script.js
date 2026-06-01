@@ -1,431 +1,295 @@
 /* ═══════════════════════════════════════════════════════
-   AUTHKIT — script.js
-   Mascot tracking · Behavior states · Auth logic
+   AUTHKIT — script.js   (Panda edition)
 ═══════════════════════════════════════════════════════ */
 'use strict';
 
-/* ── DOM references ────────────────────────────────── */
 const $ = id => document.getElementById(id);
 
-const mascot       = $('mascot');
-const head         = $('head');
-const eyebrows     = $('eyebrows');
-const pupilL       = $('pupilLeft');
-const pupilR       = $('pupilRight');
-const eyelidL      = $('eyelidLeft');
-const eyelidR      = $('eyelidRight');
-const eyeL         = $('eyeLeft');
-const eyeR         = $('eyeRight');
-const hands        = $('hands');
-const mouthInner   = $('mouthInner');
+/* ── DOM ────────────────────────────────────────────── */
+const mascot      = $('mascot');
+const head        = $('head');
+const pupilL      = $('pupilLeft');
+const pupilR      = $('pupilRight');
+const eyelidL     = $('eyelidLeft');
+const eyelidR     = $('eyelidRight');
 
-const authPage     = $('authPage');
-const welcomePage  = $('welcomePage');
-const welcomeName  = $('welcomeName');
-const logoutBtn    = $('logoutBtn');
+const authPage    = $('authPage');
+const welcomePage = $('welcomePage');
+const welcomeName = $('welcomeName');
+const logoutBtn   = $('logoutBtn');
 
-const tabLogin     = $('tabLogin');
-const tabRegister  = $('tabRegister');
-const tabIndicator = $('tabIndicator');
-const formsSlider  = $('formsSlider');
+const tabLogin    = $('tabLogin');
+const tabRegister = $('tabRegister');
+const tabIndicator= $('tabIndicator');
+const formsSlider = $('formsSlider');
 
-const loginForm    = $('loginForm');
-const registerForm = $('registerForm');
-
-const allInputs    = document.querySelectorAll('input');
-const allPasswords = document.querySelectorAll('input[type="password"]');
+const loginForm   = $('loginForm');
+const registerForm= $('registerForm');
+const allInputs   = document.querySelectorAll('input');
 
 /* ── State ──────────────────────────────────────────── */
-let mouseX = window.innerWidth / 2;
+let mouseX = window.innerWidth  / 2;
 let mouseY = window.innerHeight / 2;
-let currentState  = 'idle';   // idle | typing | covering | error | success
-let isBlinking    = false;
-let blinkTimer    = null;
-let activePanel   = 'login';  // login | register
+let currentState = 'idle';
+let isBlinking   = false;
 
-/* ═══════════════════════════════════════════════════════
-   MOUSE TRACKING (requestAnimationFrame)
-═══════════════════════════════════════════════════════ */
-let targetHeadRotX = 0, targetHeadRotY = 0;
-let currentHeadRotX = 0, currentHeadRotY = 0;
-let targetPupilX = 0, targetPupilY = 0;
-let currentPupilX = 0, currentPupilY = 0;
+/* ── Lerp vars ──────────────────────────────────────── */
+let tHRX=0, tHRY=0, cHRX=0, cHRY=0;   // head rotation targets/currents
+let tPX=0, tPY=0, cPX=0, cPY=0;        // pupil targets/currents
 
-document.addEventListener('mousemove', e => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-});
+/* ═══════════════════════════════════════════════════
+   CURSOR TRACKING  (rAF loop)
+═══════════════════════════════════════════════════ */
+document.addEventListener('mousemove', e => { mouseX=e.clientX; mouseY=e.clientY; });
+
+/* Touch support */
+document.addEventListener('touchmove', e => {
+  const t = e.touches[0];
+  mouseX = t.clientX; mouseY = t.clientY;
+}, { passive: true });
 
 function trackCursor() {
   if (currentState === 'covering') {
-    /* Covering: pupils look straight */
-    targetPupilX = 0;
-    targetPupilY = 0;
-    targetHeadRotX = 0;
-    targetHeadRotY = 0;
+    tPX=0; tPY=0; tHRX=0; tHRY=0;
   } else if (currentState === 'typing') {
-    /* Typing: eyes look slightly down */
-    targetPupilX = 0;
-    targetPupilY = 4;
-    targetHeadRotX = 6;
-    targetHeadRotY = 0;
+    tPX=0; tPY=5; tHRX=7; tHRY=0;
   } else {
-    /* Idle / normal: follow cursor */
-    const mascotRect = mascot.getBoundingClientRect();
-    const cx = mascotRect.left + mascotRect.width / 2;
-    const cy = mascotRect.top  + mascotRect.height / 2;
-
+    const r  = mascot.getBoundingClientRect();
+    const cx = r.left + r.width  / 2;
+    const cy = r.top  + r.height / 2;
     const dx = mouseX - cx;
     const dy = mouseY - cy;
-    const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+    const dist = Math.hypot(dx, dy) || 1;
 
-    /* Head tilt — very subtle */
-    const headRange = 8;
-    const nx = dx / (window.innerWidth  / 2);
-    const ny = dy / (window.innerHeight / 2);
-    targetHeadRotY =  nx * headRange;
-    targetHeadRotX = -ny * (headRange * 0.5);
+    /* Head tilt (subtle) */
+    const HR = 7;
+    tHRY =  (dx / (window.innerWidth  / 2)) * HR;
+    tHRX = -(dy / (window.innerHeight / 2)) * (HR * 0.45);
 
-    /* Pupil movement — clamped to natural range */
-    const maxPupil = 5.5;
-    const angle = Math.atan2(dy, dx);
-    const strength = Math.min(dist / 220, 1);
-    targetPupilX = Math.cos(angle) * strength * maxPupil;
-    targetPupilY = Math.sin(angle) * strength * maxPupil;
+    /* Pupil (clamped) */
+    const MP  = 5.2;
+    const str = Math.min(dist / 200, 1);
+    const ang = Math.atan2(dy, dx);
+    tPX = Math.cos(ang) * str * MP;
+    tPY = Math.sin(ang) * str * MP;
   }
 
-  /* Smooth lerp */
-  const lerpFactor = 0.10;
-  currentHeadRotX += (targetHeadRotX - currentHeadRotX) * lerpFactor;
-  currentHeadRotY += (targetHeadRotY - currentHeadRotY) * lerpFactor;
-  currentPupilX   += (targetPupilX   - currentPupilX)   * (lerpFactor * 1.4);
-  currentPupilY   += (targetPupilY   - currentPupilY)   * (lerpFactor * 1.4);
+  /* Lerp — slightly faster feel */
+  const L = 0.11, LP = 0.16;
+  cHRX += (tHRX - cHRX) * L;
+  cHRY += (tHRY - cHRY) * L;
+  cPX  += (tPX  - cPX)  * LP;
+  cPY  += (tPY  - cPY)  * LP;
 
-  /* Apply to DOM */
   head.style.transform =
-    `rotateX(${currentHeadRotX}deg) rotateY(${currentHeadRotY}deg)`;
-
-  const px = currentPupilX;
-  const py = currentPupilY;
-  pupilL.style.transform = `translate(${px}px, ${py}px)`;
-  pupilR.style.transform = `translate(${px}px, ${py}px)`;
+    `rotateX(${cHRX}deg) rotateY(${cHRY}deg)`;
+  pupilL.style.transform = `translate(${cPX}px, ${cPY}px)`;
+  pupilR.style.transform = `translate(${cPX}px, ${cPY}px)`;
 
   requestAnimationFrame(trackCursor);
 }
-
 requestAnimationFrame(trackCursor);
 
-/* ═══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    BLINK SYSTEM
-═══════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════ */
 function scheduleBlink() {
-  const delay = 2000 + Math.random() * 2500;
-  blinkTimer = setTimeout(() => {
+  setTimeout(() => {
     if (currentState !== 'covering') doBlink();
     scheduleBlink();
-  }, delay);
+  }, 2200 + Math.random() * 2600);
 }
 
 function doBlink() {
   if (isBlinking) return;
   isBlinking = true;
   mascot.classList.add('blinking');
-  setTimeout(() => {
-    mascot.classList.remove('blinking');
-    isBlinking = false;
-  }, 180);
+  setTimeout(() => { mascot.classList.remove('blinking'); isBlinking = false; }, 170);
 }
 
 scheduleBlink();
 
-/* ═══════════════════════════════════════════════════════
-   MASCOT STATE MACHINE
-═══════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════
+   STATE MACHINE
+═══════════════════════════════════════════════════ */
 function setState(state, duration) {
-  /* Remove previous states */
-  mascot.classList.remove('typing', 'covering', 'error', 'success', 'shaking');
-
+  mascot.classList.remove('typing','covering','error','success','shaking');
   currentState = state;
 
   if (state === 'error') {
-    mascot.classList.add('error', 'shaking');
-    if (duration) {
-      setTimeout(() => {
-        mascot.classList.remove('error', 'shaking');
-        currentState = 'idle';
-      }, duration);
-    }
+    mascot.classList.add('error','shaking');
+    duration && setTimeout(() => {
+      mascot.classList.remove('error','shaking');
+      currentState = 'idle';
+    }, duration);
+
   } else if (state === 'success') {
     mascot.classList.add('success');
-    if (duration) {
-      setTimeout(() => {
-        mascot.classList.remove('success');
-        currentState = 'idle';
-      }, duration);
-    }
+    duration && setTimeout(() => {
+      mascot.classList.remove('success');
+      currentState = 'idle';
+    }, duration);
+
   } else if (state !== 'idle') {
     mascot.classList.add(state);
   }
 }
 
-/* ═══════════════════════════════════════════════════════
-   INPUT EVENT LISTENERS
-═══════════════════════════════════════════════════════ */
-allInputs.forEach(input => {
-  input.addEventListener('focus', () => {
-    if (input.type === 'password') {
-      setState('covering');
-    } else {
-      setState('typing');
-    }
-  });
-
-  input.addEventListener('blur', () => {
-    setState('idle');
-  });
+/* ═══════════════════════════════════════════════════
+   INPUT EVENTS
+═══════════════════════════════════════════════════ */
+allInputs.forEach(inp => {
+  inp.addEventListener('focus', () =>
+    setState(inp.type === 'password' ? 'covering' : 'typing')
+  );
+  inp.addEventListener('blur', () => setState('idle'));
 });
 
-/* ═══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    TAB SWITCHING
-═══════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════ */
 function switchTab(target) {
-  activePanel = target;
-
   tabLogin.classList.toggle('active', target === 'login');
   tabRegister.classList.toggle('active', target === 'register');
   tabIndicator.style.left = target === 'login' ? '0%' : '50%';
-
-  if (target === 'register') {
-    formsSlider.classList.add('show-register');
-  } else {
-    formsSlider.classList.remove('show-register');
-  }
-
-  /* Clear messages on switch */
+  formsSlider.classList.toggle('show-register', target === 'register');
   clearAllMessages();
   setState('idle');
 }
 
-document.querySelectorAll('[data-target]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    switchTab(btn.dataset.target);
-  });
-});
+document.querySelectorAll('[data-target]').forEach(btn =>
+  btn.addEventListener('click', () => switchTab(btn.dataset.target))
+);
 
-/* ═══════════════════════════════════════════════════════
-   SHOW / HIDE PASSWORD TOGGLE
-═══════════════════════════════════════════════════════ */
-function setupEyeToggle(toggleId, iconId, inputId) {
-  const toggle = $(toggleId);
-  const icon   = $(iconId);
-  const input  = $(inputId);
-  if (!toggle) return;
-
-  toggle.addEventListener('click', () => {
-    const isHidden = input.type === 'password';
-    input.type = isHidden ? 'text' : 'password';
-    icon.classList.toggle('hidden-pw', isHidden);
+/* ═══════════════════════════════════════════════════
+   PASSWORD TOGGLE
+═══════════════════════════════════════════════════ */
+function setupEyeToggle(togId, iconId, inpId) {
+  const tog  = $(togId), icon = $(iconId), inp = $(inpId);
+  if (!tog) return;
+  tog.addEventListener('click', () => {
+    const hidden = inp.type === 'password';
+    inp.type = hidden ? 'text' : 'password';
+    icon.classList.toggle('hidden-pw', hidden);
   });
 }
+setupEyeToggle('loginEyeToggle','loginEyeIcon','loginPassword');
+setupEyeToggle('regEyeToggle',  'regEyeIcon',  'regPassword');
 
-setupEyeToggle('loginEyeToggle', 'loginEyeIcon', 'loginPassword');
-setupEyeToggle('regEyeToggle',   'regEyeIcon',   'regPassword');
-
-/* ═══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    VALIDATION HELPERS
-═══════════════════════════════════════════════════════ */
-const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+═══════════════════════════════════════════════════ */
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function showFieldMsg(id, msg, type) {
-  const el = $(id);
-  if (!el) return;
-  el.textContent = msg;
-  el.className = `field-msg ${type}`;
-}
-
-function showFormMsg(id, msg, type) {
-  const el = $(id);
-  if (!el) return;
-  el.textContent = msg;
-  el.className = `form-msg ${type}`;
-}
-
-function clearFieldMsg(id) {
-  const el = $(id);
-  if (!el) return;
-  el.textContent = '';
-  el.className = 'field-msg';
-}
+const msg  = (id, txt, cls) => { const e=$(id); if(!e)return; e.textContent=txt; e.className=`field-msg ${cls}`; };
+const fmsg = (id, txt, cls) => { const e=$(id); if(!e)return; e.textContent=txt; e.className=`form-msg ${cls}`; };
+const clr  = id => msg(id, '', '');
 
 function clearAllMessages() {
   ['loginEmailMsg','loginPasswordMsg','loginFormMsg',
-   'regNameMsg','regEmailMsg','regPasswordMsg','regFormMsg']
-    .forEach(id => { const el = $(id); if (el) { el.textContent = ''; el.className = el.className.includes('form-msg') ? 'form-msg' : 'field-msg'; } });
-
-  document.querySelectorAll('input').forEach(i => i.classList.remove('error-field', 'success-field'));
+   'regNameMsg','regEmailMsg','regPasswordMsg','regFormMsg'].forEach(id => {
+    const e = $(id);
+    if (!e) return;
+    e.textContent = '';
+    e.className = e.id.includes('FormMsg') ? 'form-msg' : 'field-msg';
+  });
+  document.querySelectorAll('input').forEach(i =>
+    i.classList.remove('error-field','success-field')
+  );
 }
 
-function markError(inputEl, msgId, msg) {
-  inputEl.classList.add('error-field');
-  inputEl.classList.remove('success-field');
-  showFieldMsg(msgId, msg, 'err');
-  return false;
+function bad(el, mid, txt) {
+  el.classList.add('error-field'); el.classList.remove('success-field');
+  msg(mid, txt, 'err'); return false;
+}
+function good(el, mid) {
+  el.classList.remove('error-field'); el.classList.add('success-field');
+  clr(mid); return true;
 }
 
-function markOk(inputEl, msgId, msg) {
-  inputEl.classList.remove('error-field');
-  inputEl.classList.add('success-field');
-  if (msg) showFieldMsg(msgId, msg, 'ok');
-  return true;
-}
+/* ═══════════════════════════════════════════════════
+   LOCALSTORAGE
+═══════════════════════════════════════════════════ */
+const getUsers   = ()    => JSON.parse(localStorage.getItem('ak_users')   || '[]');
+const saveUsers  = arr   => localStorage.setItem('ak_users', JSON.stringify(arr));
+const getSession = ()    => JSON.parse(localStorage.getItem('ak_session') || 'null');
+const saveSession= user  => localStorage.setItem('ak_session', JSON.stringify(user));
+const clearSess  = ()    => localStorage.removeItem('ak_session');
 
-/* ═══════════════════════════════════════════════════════
-   LOCAL STORAGE HELPERS
-═══════════════════════════════════════════════════════ */
-function getUsers() {
-  return JSON.parse(localStorage.getItem('authkit_users') || '[]');
-}
-
-function saveUsers(users) {
-  localStorage.setItem('authkit_users', JSON.stringify(users));
-}
-
-function getSession() {
-  return JSON.parse(localStorage.getItem('authkit_session') || 'null');
-}
-
-function saveSession(user) {
-  localStorage.setItem('authkit_session', JSON.stringify(user));
-}
-
-function clearSession() {
-  localStorage.removeItem('authkit_session');
-}
-
-/* ═══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    REGISTER
-═══════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════ */
 registerForm.addEventListener('submit', e => {
   e.preventDefault();
-  let valid = true;
+  let ok = true;
 
-  const nameEl  = $('regName');
-  const emailEl = $('regEmail');
-  const passEl  = $('regPassword');
-  const name    = nameEl.value.trim();
-  const email   = emailEl.value.trim();
-  const pass    = passEl.value;
+  const nEl=$('regName'), eEl=$('regEmail'), pEl=$('regPassword');
+  const n=nEl.value.trim(), em=eEl.value.trim(), pw=pEl.value;
 
-  /* Name */
-  if (!name) {
-    valid = markError(nameEl, 'regNameMsg', 'Name is required.');
-  } else {
-    markOk(nameEl, 'regNameMsg');
-  }
+  if (!n)                    { ok = bad(nEl,'regNameMsg','Name is required.');          } else { good(nEl,'regNameMsg'); }
+  if (!em)                   { ok = bad(eEl,'regEmailMsg','Email is required.')  && ok;  }
+  else if (!emailRe.test(em)){ ok = bad(eEl,'regEmailMsg','Invalid email.')       && ok;  }
+  else                       { good(eEl,'regEmailMsg'); }
+  if (!pw)                   { ok = bad(pEl,'regPasswordMsg','Password required.') && ok; }
+  else if (pw.length < 6)    { ok = bad(pEl,'regPasswordMsg','Min 6 characters.') && ok; }
+  else                       { good(pEl,'regPasswordMsg'); }
 
-  /* Email */
-  if (!email) {
-    valid = markError(emailEl, 'regEmailMsg', 'Email is required.') && valid;
-  } else if (!emailRegex.test(email)) {
-    valid = markError(emailEl, 'regEmailMsg', 'Enter a valid email.') && valid;
-  } else {
-    markOk(emailEl, 'regEmailMsg');
-  }
+  if (!ok) { setState('error', 1500); return; }
 
-  /* Password */
-  if (!pass) {
-    valid = markError(passEl, 'regPasswordMsg', 'Password is required.') && valid;
-  } else if (pass.length < 6) {
-    valid = markError(passEl, 'regPasswordMsg', 'Minimum 6 characters.') && valid;
-  } else {
-    markOk(passEl, 'regPasswordMsg');
-  }
-
-  if (!valid) {
-    setState('error', 1400);
-    return;
-  }
-
-  /* Duplicate check */
   const users = getUsers();
-  if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
-    showFormMsg('regFormMsg', 'Email already registered.', 'err');
-    markError(emailEl, 'regEmailMsg', 'Already in use.');
-    setState('error', 1400);
-    return;
+  if (users.find(u => u.email === em.toLowerCase())) {
+    fmsg('regFormMsg','Email already registered.','err');
+    bad(eEl,'regEmailMsg','Already in use.');
+    setState('error', 1500); return;
   }
 
-  /* Save */
-  users.push({ name, email: email.toLowerCase(), password: pass });
+  users.push({ name:n, email:em.toLowerCase(), password:pw });
   saveUsers(users);
-
-  showFormMsg('regFormMsg', '✓ Account created! Logging you in…', 'ok');
+  fmsg('regFormMsg','✓ Account created!','ok');
   setState('success', 1600);
 
   setTimeout(() => {
-    clearAllMessages();
-    registerForm.reset();
-    loginSuccess({ name, email });
-  }, 1400);
+    clearAllMessages(); registerForm.reset();
+    doLogin({ name:n, email:em.toLowerCase() });
+  }, 1350);
 });
 
-/* ═══════════════════════════════════════════════════════
+/* ═══════════════════════════════════════════════════
    LOGIN
-═══════════════════════════════════════════════════════ */
+═══════════════════════════════════════════════════ */
 loginForm.addEventListener('submit', e => {
   e.preventDefault();
-  let valid = true;
+  let ok = true;
 
-  const emailEl = $('loginEmail');
-  const passEl  = $('loginPassword');
-  const email   = emailEl.value.trim();
-  const pass    = passEl.value;
+  const eEl=$('loginEmail'), pEl=$('loginPassword');
+  const em=eEl.value.trim(), pw=pEl.value;
 
-  /* Email */
-  if (!email) {
-    valid = markError(emailEl, 'loginEmailMsg', 'Email is required.');
-  } else if (!emailRegex.test(email)) {
-    valid = markError(emailEl, 'loginEmailMsg', 'Enter a valid email.') && valid;
-  } else {
-    markOk(emailEl, 'loginEmailMsg');
-  }
+  if (!em)                    { ok = bad(eEl,'loginEmailMsg','Email is required.');   }
+  else if (!emailRe.test(em)) { ok = bad(eEl,'loginEmailMsg','Invalid email.') && ok; }
+  else                        { good(eEl,'loginEmailMsg'); }
+  if (!pw)                    { ok = bad(pEl,'loginPasswordMsg','Password required.') && ok; }
+  else                        { good(pEl,'loginPasswordMsg'); }
 
-  /* Password */
-  if (!pass) {
-    valid = markError(passEl, 'loginPasswordMsg', 'Password is required.') && valid;
-  } else {
-    markOk(passEl, 'loginPasswordMsg');
-  }
+  if (!ok) { setState('error', 1500); return; }
 
-  if (!valid) {
-    setState('error', 1400);
-    return;
-  }
-
-  /* Check credentials */
-  const users = getUsers();
-  const user  = users.find(u =>
-    u.email.toLowerCase() === email.toLowerCase() && u.password === pass
+  const user = getUsers().find(u =>
+    u.email === em.toLowerCase() && u.password === pw
   );
 
   if (!user) {
-    showFormMsg('loginFormMsg', 'Invalid email or password.', 'err');
-    setState('error', 1400);
-    return;
+    fmsg('loginFormMsg','Invalid email or password.','err');
+    setState('error', 1500); return;
   }
 
-  showFormMsg('loginFormMsg', `✓ Welcome back, ${user.name}!`, 'ok');
+  fmsg('loginFormMsg',`✓ Welcome back, ${user.name}!`,'ok');
   setState('success', 1600);
-
-  setTimeout(() => {
-    loginSuccess(user);
-  }, 1200);
+  setTimeout(() => doLogin(user), 1250);
 });
 
-/* ═══════════════════════════════════════════════════════
-   SESSION MANAGEMENT
-═══════════════════════════════════════════════════════ */
-function loginSuccess(user) {
+/* ═══════════════════════════════════════════════════
+   SESSION
+═══════════════════════════════════════════════════ */
+function doLogin(user) {
   saveSession(user);
   welcomeName.textContent = user.name;
   authPage.classList.add('hidden');
@@ -433,7 +297,7 @@ function loginSuccess(user) {
 }
 
 logoutBtn.addEventListener('click', () => {
-  clearSession();
+  clearSess();
   welcomePage.classList.add('hidden');
   authPage.classList.remove('hidden');
   loginForm.reset();
@@ -441,47 +305,41 @@ logoutBtn.addEventListener('click', () => {
   setState('idle');
 });
 
-/* ── Auto-restore session on load ──────────────────── */
-(function checkSession() {
-  const session = getSession();
-  if (session) {
-    welcomeName.textContent = session.name;
+/* Auto-restore */
+(function() {
+  const s = getSession();
+  if (s) {
+    welcomeName.textContent = s.name;
     authPage.classList.add('hidden');
     welcomePage.classList.remove('hidden');
   }
 })();
 
-/* ── Live validation feedback ───────────────────────── */
-$('loginEmail').addEventListener('input', function () {
-  if (this.value && !emailRegex.test(this.value.trim())) {
-    showFieldMsg('loginEmailMsg', 'Invalid email format.', 'err');
-    this.classList.add('error-field');
-  } else {
-    clearFieldMsg('loginEmailMsg');
-    this.classList.remove('error-field');
-  }
+/* ═══════════════════════════════════════════════════
+   LIVE VALIDATION
+═══════════════════════════════════════════════════ */
+$('loginEmail').addEventListener('input', function() {
+  if (this.value && !emailRe.test(this.value.trim()))
+    { msg('loginEmailMsg','Invalid email.','err'); this.classList.add('error-field'); }
+  else { clr('loginEmailMsg'); this.classList.remove('error-field'); }
 });
 
-$('regEmail').addEventListener('input', function () {
-  if (this.value && !emailRegex.test(this.value.trim())) {
-    showFieldMsg('regEmailMsg', 'Invalid email format.', 'err');
-    this.classList.add('error-field');
-  } else {
-    clearFieldMsg('regEmailMsg');
-    this.classList.remove('error-field');
-  }
+$('regEmail').addEventListener('input', function() {
+  if (this.value && !emailRe.test(this.value.trim()))
+    { msg('regEmailMsg','Invalid email.','err'); this.classList.add('error-field'); }
+  else { clr('regEmailMsg'); this.classList.remove('error-field'); }
 });
 
-$('regPassword').addEventListener('input', function () {
-  if (this.value.length > 0 && this.value.length < 6) {
-    showFieldMsg('regPasswordMsg', `${6 - this.value.length} more characters needed.`, 'err');
-    this.classList.add('error-field');
-  } else if (this.value.length >= 6) {
-    showFieldMsg('regPasswordMsg', '✓ Strong enough!', 'ok');
-    this.classList.remove('error-field');
-    this.classList.add('success-field');
+$('regPassword').addEventListener('input', function() {
+  const l = this.value.length;
+  if (l > 0 && l < 6) {
+    msg('regPasswordMsg', `${6-l} more char${6-l>1?'s':''} needed.`, 'err');
+    this.classList.add('error-field'); this.classList.remove('success-field');
+  } else if (l >= 6) {
+    msg('regPasswordMsg','✓ Looks good!','ok');
+    this.classList.remove('error-field'); this.classList.add('success-field');
   } else {
-    clearFieldMsg('regPasswordMsg');
-    this.classList.remove('error-field', 'success-field');
+    clr('regPasswordMsg');
+    this.classList.remove('error-field','success-field');
   }
 });

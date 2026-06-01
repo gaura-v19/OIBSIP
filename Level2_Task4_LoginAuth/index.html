@@ -21,18 +21,43 @@
       <div class="mascot-wrap" id="mascotWrap">
         <div class="mascot" id="mascot">
 
-          <!-- Hands (behind head) -->
+          <!-- Hands (raised for password) -->
           <div class="hands" id="hands">
-            <div class="hand hand-left" id="handLeft"></div>
-            <div class="hand hand-right" id="handRight"></div>
+            <div class="hand hand-left" id="handLeft">
+              <div class="hand-thumb"></div>
+            </div>
+            <div class="hand hand-right" id="handRight">
+              <div class="hand-thumb"></div>
+            </div>
           </div>
 
-          <!-- Head -->
+          <!-- HEAD -->
           <div class="head" id="head">
+
+            <!-- Ear patches -->
+            <div class="ear-patch ear-patch-left"></div>
+            <div class="ear-patch ear-patch-right"></div>
+
+            <!-- Ears -->
+            <div class="ears">
+              <div class="ear ear-left">
+                <div class="ear-inner"></div>
+              </div>
+              <div class="ear ear-right">
+                <div class="ear-inner"></div>
+              </div>
+            </div>
+
             <!-- Eyebrows -->
-            <div class="eyebrows" id="eyebrows">
+            <div class="eyebrows">
               <div class="eyebrow eyebrow-left" id="ebLeft"></div>
               <div class="eyebrow eyebrow-right" id="ebRight"></div>
+            </div>
+
+            <!-- Eye patches (panda markings) -->
+            <div class="eye-patches">
+              <div class="eye-patch eye-patch-left"></div>
+              <div class="eye-patch eye-patch-right"></div>
             </div>
 
             <!-- Eyes -->
@@ -55,12 +80,18 @@
               </div>
             </div>
 
-            <!-- Nose -->
-            <div class="nose"></div>
-
-            <!-- Mouth -->
-            <div class="mouth" id="mouth">
-              <div class="mouth-inner" id="mouthInner"></div>
+            <!-- Snout -->
+            <div class="snout">
+              <div class="nose"></div>
+              <!-- Chewing stick -->
+              <div class="stick-wrap" id="stickWrap">
+                <div class="stick"></div>
+                <div class="stick-leaf"></div>
+              </div>
+              <!-- Mouth -->
+              <div class="mouth" id="mouth">
+                <div class="mouth-inner" id="mouthInner"></div>
+              </div>
             </div>
 
             <!-- Cheeks -->
@@ -68,22 +99,27 @@
               <div class="cheek cheek-left"></div>
               <div class="cheek cheek-right"></div>
             </div>
-          </div>
 
-          <!-- Body -->
+          </div><!-- /head -->
+
+          <!-- BODY -->
           <div class="body-wrap" id="bodyWrap">
             <div class="body">
+              <div class="body-patch"></div>
               <div class="body-shine"></div>
+              <!-- Arms -->
+              <div class="arm arm-left"></div>
+              <div class="arm arm-right"></div>
             </div>
             <!-- Feet -->
             <div class="feet">
-              <div class="foot foot-left"></div>
-              <div class="foot foot-right"></div>
+              <div class="foot foot-left"><div class="foot-pad"></div></div>
+              <div class="foot foot-right"><div class="foot-pad"></div></div>
             </div>
           </div>
 
-        </div>
-      </div>
+        </div><!-- /mascot -->
+      </div><!-- /mascot-wrap -->
 
       <!-- TABS -->
       <div class="tabs">
@@ -95,87 +131,93 @@
       <!-- FORMS SLIDER -->
       <div class="forms-slider" id="formsSlider">
 
-        <!-- LOGIN FORM -->
+        <!-- LOGIN -->
         <div class="form-panel" id="loginPanel">
           <form id="loginForm" novalidate>
             <div class="field-group">
               <label for="loginEmail">Email</label>
-              <input type="email" id="loginEmail" name="email" placeholder="you@example.com" autocomplete="email" />
+              <input type="email" id="loginEmail" placeholder="you@example.com" autocomplete="email" />
               <span class="field-msg" id="loginEmailMsg"></span>
             </div>
             <div class="field-group">
               <label for="loginPassword">Password</label>
               <div class="password-wrap">
-                <input type="password" id="loginPassword" name="password" placeholder="••••••••" autocomplete="current-password" />
-                <button type="button" class="eye-toggle" id="loginEyeToggle" aria-label="Show password">
+                <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
+                <button type="button" class="eye-toggle" id="loginEyeToggle" aria-label="Toggle password">
                   <span class="eye-icon" id="loginEyeIcon"></span>
                 </button>
               </div>
               <span class="field-msg" id="loginPasswordMsg"></span>
             </div>
             <span class="form-msg" id="loginFormMsg"></span>
-            <button type="submit" class="btn-primary" id="loginBtn">Login</button>
+            <button type="submit" class="btn-primary">Login</button>
           </form>
-          <p class="switch-text">No account? <button class="link-btn" data-target="register">Register</button></p>
+          <p class="switch-text">No account? <button class="link-btn" data-target="register">Register free</button></p>
         </div>
 
-        <!-- REGISTER FORM -->
+        <!-- REGISTER -->
         <div class="form-panel" id="registerPanel">
           <form id="registerForm" novalidate>
             <div class="field-group">
               <label for="regName">Name</label>
-              <input type="text" id="regName" name="name" placeholder="Your name" autocomplete="name" />
+              <input type="text" id="regName" placeholder="Your name" autocomplete="name" />
               <span class="field-msg" id="regNameMsg"></span>
             </div>
             <div class="field-group">
               <label for="regEmail">Email</label>
-              <input type="email" id="regEmail" name="email" placeholder="you@example.com" autocomplete="email" />
+              <input type="email" id="regEmail" placeholder="you@example.com" autocomplete="email" />
               <span class="field-msg" id="regEmailMsg"></span>
             </div>
             <div class="field-group">
               <label for="regPassword">Password</label>
               <div class="password-wrap">
-                <input type="password" id="regPassword" name="password" placeholder="Min 6 characters" autocomplete="new-password" />
-                <button type="button" class="eye-toggle" id="regEyeToggle" aria-label="Show password">
+                <input type="password" id="regPassword" placeholder="Min 6 characters" autocomplete="new-password" />
+                <button type="button" class="eye-toggle" id="regEyeToggle" aria-label="Toggle password">
                   <span class="eye-icon" id="regEyeIcon"></span>
                 </button>
               </div>
               <span class="field-msg" id="regPasswordMsg"></span>
             </div>
             <span class="form-msg" id="regFormMsg"></span>
-            <button type="submit" class="btn-primary" id="registerBtn">Create Account</button>
+            <button type="submit" class="btn-primary">Create Account</button>
           </form>
           <p class="switch-text">Have an account? <button class="link-btn" data-target="login">Login</button></p>
         </div>
 
-      </div>
-    </div>
-  </div>
+      </div><!-- /forms-slider -->
+    </div><!-- /card -->
+  </div><!-- /authPage -->
 
   <!-- ═══════════════════════════════════════════════
        WELCOME PAGE
   ══════════════════════════════════════════════════ -->
   <div class="page hidden" id="welcomePage">
     <div class="card welcome-card">
+      <!-- Mini panda -->
       <div class="welcome-mascot">
-        <div class="mascot-small">
-          <div class="sm-head">
-            <div class="sm-eyes">
-              <div class="sm-eye"></div>
-              <div class="sm-eye"></div>
+        <div class="mini-panda">
+          <div class="mp-head">
+            <div class="mp-ear mp-ear-l"><div class="mp-ear-i"></div></div>
+            <div class="mp-ear mp-ear-r"><div class="mp-ear-i"></div></div>
+            <div class="mp-patch mp-patch-l"></div>
+            <div class="mp-patch mp-patch-r"></div>
+            <div class="mp-eye mp-eye-l"></div>
+            <div class="mp-eye mp-eye-r"></div>
+            <div class="mp-snout">
+              <div class="mp-nose"></div>
+              <div class="mp-mouth"></div>
             </div>
-            <div class="sm-mouth"></div>
           </div>
-          <div class="sm-body"></div>
+          <div class="mp-body"></div>
         </div>
       </div>
-      <h1 class="welcome-title">Welcome back, <span id="welcomeName">Friend</span>!</h1>
-      <p class="welcome-sub">You are now securely logged in.</p>
+      <h1 class="welcome-title">Hey, <span id="welcomeName">Friend</span>! 🎉</h1>
+      <p class="welcome-sub">You're securely logged in and good to go.</p>
       <div class="welcome-badge">
         <span class="badge-dot"></span>
-        <span>Authenticated Session Active</span>
+        <span>Session Active</span>
       </div>
-      <button class="btn-primary btn-logout" id="logoutBtn">Logout</button>
+      <button class="btn-primary btn-logout" id="logoutBtn">Sign Out</button>
     </div>
   </div>
 
