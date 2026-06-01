@@ -4,7 +4,7 @@
 [![GitHub](https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github)](https://github.com/gaurav-o/OIBSIP/tree/main/Level2_Task3_ToDoApp)
 
 <p align="center">
-  <img src="assets/preview.png" alt="Tasko Preview" width="680"/>
+  <img src="assets/preview.png" alt="Preview" width="680"/>
 </p>
 
 ---
@@ -36,9 +36,3 @@ A task management web app built with vanilla HTML, CSS and JavaScript. No framew
 ![HTML](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white)
 ![CSS](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-
----
-
-## Live Demo
-
-[gaurav-o.github.io/OIBSIP/Level2_Task3_ToDoApp](https://gaurav-o.github.io/OIBSIP/Level2_Task3_ToDoApp/)

@@ -1,11 +1,35 @@
 // ── State ──
-let tasks = JSON.parse(localStorage.getItem('tasko')) || [];
+let tasks = JSON.parse(localStorage.getItem('tasko-ds')) || [];
 let filter = 'all';
 let priority = 'medium';
 let dragFrom = null;
 
+const RANKS = [
+  { min: 0,   label: 'Rank: Mizunoto' },
+  { min: 1,   label: 'Rank: Mizunoe' },
+  { min: 5,   label: 'Rank: Kanoto' },
+  { min: 10,  label: 'Rank: Kanoe' },
+  { min: 20,  label: 'Rank: Tsuchinoto' },
+  { min: 35,  label: 'Rank: Tsuchinoe' },
+  { min: 50,  label: 'Rank: Hinoto' },
+  { min: 75,  label: 'Rank: Hinoe' },
+  { min: 100, label: 'Rank: Kinoto' },
+  { min: 150, label: 'Hashira' },
+];
+
+const BREATH = [
+  'Total Concentration',
+  'Breath of Water',
+  'Breath of Flame',
+  'Breath of Thunder',
+  'Breath of Wind',
+  'Breath of Stone',
+  'Breath of the Sun',
+];
+
 // ── Boot ──
 document.addEventListener('DOMContentLoaded', () => {
+  spawnPetals();
   setupPriority();
   setupTabs();
   setupClear();
@@ -15,12 +39,30 @@ document.addEventListener('DOMContentLoaded', () => {
   render();
 });
 
+// ── Petals ──
+function spawnPetals() {
+  const wrap = document.getElementById('petals');
+  for (let i = 0; i < 18; i++) {
+    const p = document.createElement('div');
+    p.className = 'petal';
+    const size = Math.random() * 6 + 4;
+    p.style.cssText = `
+      left: ${Math.random() * 100}%;
+      width: ${size}px;
+      height: ${size}px;
+      animation-duration: ${Math.random() * 10 + 8}s;
+      animation-delay: ${Math.random() * 10}s;
+    `;
+    wrap.appendChild(p);
+  }
+}
+
 // ── Priority ──
 function setupPriority() {
-  document.querySelectorAll('.p-btn').forEach(btn => {
+  document.querySelectorAll('.p-pill').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.p-btn').forEach(b => b.classList.remove('selected'));
-      btn.classList.add('selected');
+      document.querySelectorAll('.p-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
       priority = btn.dataset.p;
     });
   });
@@ -28,9 +70,9 @@ function setupPriority() {
 
 // ── Tabs ──
 function setupTabs() {
-  document.querySelectorAll('.tab[data-f]').forEach(tab => {
+  document.querySelectorAll('.ftab[data-f]').forEach(tab => {
     tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab[data-f]').forEach(t => t.classList.remove('on'));
+      document.querySelectorAll('.ftab[data-f]').forEach(t => t.classList.remove('on'));
       tab.classList.add('on');
       filter = tab.dataset.f;
       render();
@@ -42,10 +84,10 @@ function setupTabs() {
 function setupClear() {
   document.getElementById('clear-btn').addEventListener('click', () => {
     const n = tasks.filter(t => t.done).length;
-    if (!n) { toast('Nothing to clear'); return; }
+    if (!n) { toast('No completed missions'); return; }
     tasks = tasks.filter(t => !t.done);
     save(); render();
-    toast(`Cleared ${n} task${n > 1 ? 's' : ''}`);
+    toast(`${n} mission${n > 1 ? 's' : ''} cleared`);
   });
 }
 
@@ -56,7 +98,7 @@ function addTask() {
   if (!text) {
     inp.classList.add('shake');
     inp.addEventListener('animationend', () => inp.classList.remove('shake'), { once: true });
-    toast('Type something first!');
+    toast('Name your mission first');
     return;
   }
   tasks.unshift({
@@ -69,7 +111,7 @@ function addTask() {
   inp.value = '';
   document.getElementById('due-date').value = '';
   save(); render();
-  toast('Task added ✓');
+  toast('Mission carved into the scroll');
 }
 
 // ── Toggle ──
@@ -80,7 +122,7 @@ function toggleTask(id) {
   save(); render();
   if (t.done) {
     const allDone = tasks.length && tasks.every(t => t.done);
-    toast(allDone ? '🎉 All done!' : 'Nice one! 🔥');
+    toast(allDone ? 'All missions complete. You are Hashira.' : 'Mission complete.');
   }
 }
 
@@ -107,17 +149,17 @@ function editTask(id) {
   window.getSelection().removeAllRanges();
   window.getSelection().addRange(range);
 
-  const save_ = () => {
+  const commit = () => {
     const val = el.textContent.trim();
     if (val) t.text = val;
     el.contentEditable = 'false';
     save(); render();
   };
   el.addEventListener('keydown', e => {
-    if (e.key === 'Enter') { e.preventDefault(); save_(); }
+    if (e.key === 'Enter') { e.preventDefault(); commit(); }
     if (e.key === 'Escape') { el.contentEditable = 'false'; render(); }
   }, { once: true });
-  el.addEventListener('blur', save_, { once: true });
+  el.addEventListener('blur', commit, { once: true });
 }
 
 // ── Render ──
@@ -137,10 +179,7 @@ function render() {
     empty.classList.add('show');
   } else {
     empty.classList.remove('show');
-    visible.forEach((t, i) => {
-      const li = makeTask(t, i);
-      list.appendChild(li);
-    });
+    visible.forEach((t, i) => list.appendChild(makeTask(t, i)));
   }
 
   updateStats();
@@ -152,7 +191,7 @@ function makeTask(t, i) {
   li.className = `task${t.done ? ' done' : ''}`;
   li.dataset.id = t.id;
   li.dataset.p = t.priority;
-  li.style.animationDelay = `${i * 0.04}s`;
+  li.style.animationDelay = `${i * 0.045}s`;
   li.draggable = true;
 
   let dueHtml = '';
@@ -160,7 +199,9 @@ function makeTask(t, i) {
     const d = new Date(t.due + 'T00:00:00');
     const now = new Date(); now.setHours(0,0,0,0);
     const late = d < now && !t.done;
-    dueHtml = `<span class="due-tag${late ? ' late' : ''}">${late ? '⚠ ' : ''}${d.toLocaleDateString('en-US',{month:'short',day:'numeric'})}</span>`;
+    dueHtml = `<span class="due-tag${late ? ' late' : ''}">
+      ${late ? '⚠ Overdue · ' : ''}${d.toLocaleDateString('en-US',{month:'short',day:'numeric'})}
+    </span>`;
   }
 
   li.innerHTML = `
@@ -180,9 +221,12 @@ function makeTask(t, i) {
     </div>
   `;
 
-  li.addEventListener('dragstart', () => { dragFrom = tasks.findIndex(x => x.id === t.id); li.classList.add('dragging'); });
-  li.addEventListener('dragend',   () => li.classList.remove('dragging'));
-  li.addEventListener('dragover',  e => { e.preventDefault(); li.classList.add('over'); });
+  li.addEventListener('dragstart', () => {
+    dragFrom = tasks.findIndex(x => x.id === t.id);
+    li.classList.add('dragging');
+  });
+  li.addEventListener('dragend', () => li.classList.remove('dragging'));
+  li.addEventListener('dragover', e => { e.preventDefault(); li.classList.add('over'); });
   li.addEventListener('dragleave', () => li.classList.remove('over'));
   li.addEventListener('drop', e => {
     e.preventDefault();
@@ -207,11 +251,26 @@ function updateStats() {
 
   document.getElementById('fill').style.width = pct + '%';
   document.getElementById('progress-pct').textContent = pct + '%';
-  document.getElementById('counter').textContent = total === 0 ? 'No tasks' : `${done}/${total} done`;
 
-  const labels = ['Ready when you are', `${total} task${total>1?'s':''} to go 💪`, 'Keep going! 🔥', 'Almost there! ⚡', 'Everything done! 🎉'];
+  const msgs = [
+    'Awaiting orders...',
+    `${total - done} mission${total - done !== 1 ? 's' : ''} remaining`,
+    'Push forward, demon slayer',
+    'Nearly there. Hold your breath.',
+    'All demons slain.'
+  ];
   const idx = total === 0 ? 0 : pct === 100 ? 4 : pct >= 75 ? 3 : pct >= 40 ? 2 : 1;
-  document.getElementById('progress-label').textContent = labels[idx];
+  document.getElementById('progress-label').textContent = msgs[idx];
+
+  // Rank
+  const totalDone = tasks.filter(t => t.done).length;
+  let rank = RANKS[0];
+  for (const r of RANKS) { if (totalDone >= r.min) rank = r; }
+  document.getElementById('rank-label').textContent = rank.label;
+
+  // Breathing form
+  const bIdx = Math.floor((pct / 100) * (BREATH.length - 1));
+  document.getElementById('breathing-text').textContent = BREATH[bIdx];
 }
 
 // ── Toast ──
@@ -226,7 +285,7 @@ function toast(msg) {
   el.textContent = msg;
   el.classList.add('show');
   clearTimeout(window._t);
-  window._t = setTimeout(() => el.classList.remove('show'), 2200);
+  window._t = setTimeout(() => el.classList.remove('show'), 2500);
 }
 
 // ── Helpers ──
@@ -235,5 +294,5 @@ function esc(s) {
 }
 
 function save() {
-  localStorage.setItem('tasko', JSON.stringify(tasks));
+  localStorage.setItem('tasko-ds', JSON.stringify(tasks));
 }
