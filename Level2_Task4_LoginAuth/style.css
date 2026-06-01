@@ -386,18 +386,25 @@ body {
 /* ── HANDS ──────────────────────────────────────── */
 .hands {
   position: absolute;
-  top: 0; left: 50%; transform: translateX(-50%);
-  width: 138px; z-index: 10;
+  /* anchor karo head ke top-left corner se */
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 102px; /* head ki width ke barabar */
+  height: 100px;
+  z-index: 6;
   pointer-events: none;
 }
 
 .hand {
   position: absolute;
-  width: 36px; height: 32px;
+  width: 30px; height: 26px;
   background: radial-gradient(ellipse at 40% 35%, #3a3a3a, var(--p-black));
   border-radius: 50% 50% 42% 42%;
-  top: 120px; /* hidden below head */
-  transition: top 0.48s cubic-bezier(0.34,1.56,0.64,1);
+  /* hidden: neeche feet ke paas */
+  top: 160px;
+  transition: top 0.48s cubic-bezier(0.34, 1.2, 0.64, 1),
+              transform 0.48s cubic-bezier(0.34, 1.2, 0.64, 1);
   box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
@@ -415,16 +422,33 @@ body {
 .hand-thumb {
   position: absolute;
   bottom: 2px; left: 4px;
-  width: 10px; height: 14px;
+  width: 9px; height: 12px;
   background: radial-gradient(ellipse at 40% 30%, #4a4a4a, var(--p-black));
   border-radius: 50% 50% 40% 40%;
 }
 
-.hand-left  { left: 4px;  transform: rotate(-18deg); }
-.hand-right { right: 4px; left: auto; transform: rotate(18deg); }
+.hand-left  {
+  left: -10px;
+  transform: rotate(-20deg);
+  transform-origin: top right;
+}
+.hand-right {
+  right: -10px; left: auto;
+  transform: rotate(20deg);
+  transform-origin: top left;
+}
 
-.mascot.covering .hand-left  { top: 30px; transform: rotate(-12deg); }
-.mascot.covering .hand-right { top: 30px; transform: rotate(12deg); }
+
+.mascot.covering .hand-left {
+  top: 28px;
+  transform: rotate(-5deg);
+  transform-origin: top right;
+}
+.mascot.covering .hand-right {
+  top: 28px;
+  transform: rotate(5deg);
+  transform-origin: top left;
+}
 
 /* ── BODY ──────────────────────────────────────── */
 .body-wrap {

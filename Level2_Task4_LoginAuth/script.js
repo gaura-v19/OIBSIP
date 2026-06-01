@@ -7,7 +7,7 @@ const $ = id => document.getElementById(id);
 
 /* ── DOM ────────────────────────────────────────────── */
 const mascot      = $('mascot');
-const head        = $('head');
+
 const pupilL      = $('pupilLeft');
 const pupilR      = $('pupilRight');
 const eyelidL     = $('eyelidLeft');
@@ -34,7 +34,7 @@ let currentState = 'idle';
 let isBlinking   = false;
 
 /* ── Lerp vars ──────────────────────────────────────── */
-let tHRX=0, tHRY=0, cHRX=0, cHRY=0;   // head rotation targets/currents
+  // head rotation targets/currents
 let tPX=0, tPY=0, cPX=0, cPY=0;        // pupil targets/currents
 
 /* ═══════════════════════════════════════════════════
