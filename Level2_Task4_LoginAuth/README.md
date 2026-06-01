@@ -27,9 +27,3 @@ https://github.com/gaurav-o/OIBSIP/tree/main/Level2_Task4_LoginAuth
 - CSS3
 - JavaScript (Vanilla)
 
-## How to Run
-1. Clone the repo
-2. Open index.html in any modern browser
-3. No build step or installation needed
-
-## File Structure
