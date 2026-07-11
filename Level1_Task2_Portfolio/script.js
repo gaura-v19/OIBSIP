@@ -1,10 +1,39 @@
-/* ===========================
-   Fade In Animation
-=========================== */
+// ================================
+// Smooth Scroll
+// ================================
+
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+
+    anchor.addEventListener("click", function (e) {
+
+        e.preventDefault();
+
+        const target = document.querySelector(this.getAttribute("href"));
+
+        if (target) {
+
+            target.scrollIntoView({
+
+                behavior: "smooth",
+                block: "start"
+
+            });
+
+        }
+
+    });
+
+});
+
+
+
+// ================================
+// Scroll Reveal Animation
+// ================================
 
 const observer = new IntersectionObserver((entries) => {
 
-    entries.forEach((entry) => {
+    entries.forEach(entry => {
 
         if (entry.isIntersecting) {
 
@@ -15,66 +44,29 @@ const observer = new IntersectionObserver((entries) => {
     });
 
 }, {
+
     threshold: 0.15
-});
-
-
-
-document.querySelectorAll(
-    ".container, .featured-card, .card, .skills-grid, footer"
-).forEach((element) => {
-
-    element.classList.add("fade");
-
-    observer.observe(element);
 
 });
 
+document.querySelectorAll("section").forEach(section => {
 
+    section.classList.add("fade");
 
-/* ===========================
-   Active Button Animation
-=========================== */
-
-document.querySelectorAll("a").forEach((button) => {
-
-    button.addEventListener("mouseenter", () => {
-
-        button.style.transform = "translateY(-2px)";
-
-    });
-
-    button.addEventListener("mouseleave", () => {
-
-        button.style.transform = "translateY(0px)";
-
-    });
+    observer.observe(section);
 
 });
 
 
 
-/* ===========================
-   Image Hover Cursor
-=========================== */
+// ================================
+// Current Year
+// ================================
 
-document.querySelectorAll("img").forEach((img) => {
+const footer = document.querySelector("footer p");
 
-    img.draggable = false;
+if (footer) {
 
-});
+    footer.innerHTML = `© ${new Date().getFullYear()} Gaurav Tripathi`;
 
-
-
-/* ===========================
-   Current Year (optional)
-=========================== */
-
-const year = new Date().getFullYear();
-
-const footer = document.querySelector("footer");
-
-footer.insertAdjacentHTML(
-    "beforeend",
-    `<p>© ${year} Gaurav Tripathi</p>`
-);
+}
